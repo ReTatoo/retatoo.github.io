@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReTatoo</title>
+  <meta name="description" content="ReTatoo が作ったソフトウェアの紹介とダウンロード">
+  <meta property="og:title" content="ReTatoo">
+  <meta property="og:description" content="ReTatoo が作ったソフトウェアの紹介とダウンロード">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%237c5cff'/><text x='16' y='22' font-size='16' font-family='sans-serif' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a href="#" class="logo"><span class="logo-mark">R</span>ReTatoo</a>
+    <nav>
+      <a href="#works">Works</a>
+      <a href="#about">About</a>
+      <a href="https://github.com/Retatoo" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Software Developer</p>
+      <h1>作ったものを、<br><span class="grad">使える形で届ける。</span></h1>
+      <p class="lead">ReTatoo が開発したソフトウェアやツールをまとめています。<br>気になるものがあれば、自由にダウンロードして使ってください。</p>
+      <div class="cta">
+        <a href="#works" class="btn primary">作品を見る</a>
+        <a href="https://github.com/Retatoo" class="btn ghost" target="_blank" rel="noopener">GitHub を見る</a>
+      </div>
+    </section>
+
+    <section id="works" class="section">
+      <h2>Works</h2>
+      <p class="sub">公開中のソフトウェア</p>
+      <div class="grid">
+        <!-- ▼ 作品カード：この <article> ブロックをコピーすると作品を増やせます -->
+        <article class="card">
+          <div class="thumb t1">App</div>
+          <div class="card-body">
+            <h3>ソフト名 その1</h3>
+            <p>ここにソフトの一言説明が入ります。何ができるのか、誰向けかを短く書きます。</p>
+            <ul class="tags"><li>Windows</li><li>Python</li></ul>
+            <div class="links">
+              <a href="#" class="btn small primary">ダウンロード</a>
+              <a href="#" class="btn small ghost">ソースコード</a>
+            </div>
+          </div>
+        </article>
+        <!-- ▲ ここまで -->
+
+        <article class="card">
+          <div class="thumb t2">Tool</div>
+          <div class="card-body">
+            <h3>ソフト名 その2</h3>
+            <p>ここにソフトの一言説明が入ります。スクリーンショットがあると伝わりやすいです。</p>
+            <ul class="tags"><li>Web</li><li>JavaScript</li></ul>
+            <div class="links">
+              <a href="#" class="btn small primary">使ってみる</a>
+              <a href="#" class="btn small ghost">ソースコード</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb t3">Lib</div>
+          <div class="card-body">
+            <h3>ソフト名 その3</h3>
+            <p>ここにソフトの一言説明が入ります。準備中の作品は「Coming soon」にしてもOKです。</p>
+            <ul class="tags"><li>Coming soon</li></ul>
+            <div class="links">
+              <a href="#" class="btn small ghost">詳しく見る</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" class="section about">
+      <h2>About</h2>
+      <p class="sub">ReTatoo について</p>
+      <p>ここに自己紹介が入ります。どんなソフトを作っているか、使っている技術、興味のあることなどを書きます。</p>
+      <ul class="tags"><li>Python</li><li>JavaScript</li><li>C#</li></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> ReTatoo</p>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

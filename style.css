@@ -165,3 +165,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .work { align-items: start; }
 .work-visual { position: sticky; top: 90px; }
 .work-visual.shot { background: var(--black); }
+.dl { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; margin-top: 18px; }
+.dl .more { margin-top: 0; }
+.small-btn { padding: 12px 22px; font-size: .95rem; }
+.dl-meta { font-size: .75rem; font-weight: 600; opacity: .85; margin-left: 6px; }

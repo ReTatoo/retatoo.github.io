@@ -169,3 +169,5 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .dl .more { margin-top: 0; }
 .small-btn { padding: 12px 22px; font-size: .95rem; }
 .dl-meta { font-size: .75rem; font-weight: 600; opacity: .85; margin-left: 6px; }
+.work-visual.shot-light { background: #F7F7F5; box-shadow: inset 0 0 0 1px #DEDBD2; }
+.work-visual.shot-light img { mix-blend-mode: multiply; }

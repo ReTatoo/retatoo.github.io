@@ -171,3 +171,4 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .dl-meta { font-size: .75rem; font-weight: 600; opacity: .85; margin-left: 6px; }
 .work-visual.shot-light { background: #F7F7F5; box-shadow: inset 0 0 0 1px #DEDBD2; }
 .work-visual.shot-light img { mix-blend-mode: multiply; }
+.note { font-size: .8rem; color: var(--muted); margin-top: 12px; }

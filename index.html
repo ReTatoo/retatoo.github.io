@@ -102,8 +102,25 @@
       </article>
 
       <article class="work">
-        <div class="work-visual v-navy">
-          <span class="work-name">Talee</span>
+        <div class="work-media slider" data-slider>
+          <div class="work-visual shot">
+            <div class="slides" tabindex="0" aria-label="Talee のスクリーンショット（左右にスワイプで切り替え）">
+              <figure class="slide"><img src="assets/works/talee-1.webp" alt="Talee の本文エディタ。セリフ・心の声・地の文が色分けされ、右側にこの話の登場人物と伏線が表示されている" width="1600" height="1200" loading="lazy"></figure>
+              <figure class="slide"><img src="assets/works/talee-2.webp" alt="本文中のキャラ名「カイ」にマウスを乗せ、設定メモがポップアップしている" width="1600" height="1200" loading="lazy"></figure>
+              <figure class="slide"><img src="assets/works/talee-3.webp" alt="伏線「青い封筒の差出人」の張った箇所と回収した箇所が右パネルに並んでいる" width="1600" height="1200" loading="lazy"></figure>
+            </div>
+            <button class="slide-btn prev" type="button" aria-label="前の画像">‹</button>
+            <button class="slide-btn next" type="button" aria-label="次の画像">›</button>
+          </div>
+          <div class="slider-bar">
+            <p class="slide-cap" aria-live="polite"></p>
+            <div class="dots" role="tablist"></div>
+          </div>
+          <template class="caps">
+            <span>セリフ・心の声・地の文を色分け。文字数や割合もリアルタイムに</span>
+            <span>キャラ名にマウスを乗せるだけで、設定メモを確認</span>
+            <span>伏線の「張った箇所」と「回収した箇所」をひと目で</span>
+          </template>
         </div>
         <div class="work-body">
           <p class="work-meta">2026 ・ Windows App ・ v1.6 完成</p>
@@ -200,5 +217,57 @@
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.querySelectorAll('[data-slider]').forEach(function (root) {
+      var track = root.querySelector('.slides');
+      var slides = root.querySelectorAll('.slide');
+      var caps = Array.prototype.map.call(root.querySelector('.caps').content.querySelectorAll('span'), function (s) { return s.textContent; });
+      var cap = root.querySelector('.slide-cap');
+      var dotsBox = root.querySelector('.dots');
+      var current = 0, timer = null;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var dots = Array.prototype.map.call(slides, function (_, i) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'dot'; b.setAttribute('role', 'tab');
+        b.setAttribute('aria-label', (i + 1) + '枚目');
+        b.addEventListener('click', function () { go(i); restart(); });
+        dotsBox.appendChild(b);
+        return b;
+      });
+
+      function render(i) {
+        current = i;
+        dots.forEach(function (d, k) { d.setAttribute('aria-selected', k === i); });
+        cap.textContent = caps[i] || '';
+      }
+      function go(i) {
+        i = (i + slides.length) % slides.length;
+        track.scrollTo({ left: track.clientWidth * i, behavior: reduce ? 'auto' : 'smooth' });
+        render(i);
+      }
+      root.querySelector('.prev').addEventListener('click', function () { go(current - 1); restart(); });
+      root.querySelector('.next').addEventListener('click', function () { go(current + 1); restart(); });
+      track.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { go(current + 1); restart(); }
+        if (e.key === 'ArrowLeft') { go(current - 1); restart(); }
+      });
+      var t;
+      track.addEventListener('scroll', function () {
+        clearTimeout(t);
+        t = setTimeout(function () { render(Math.round(track.scrollLeft / track.clientWidth)); }, 80);
+      });
+
+      function start() { if (!reduce) timer = setInterval(function () { go(current + 1); }, 5000); }
+      function stop() { clearInterval(timer); timer = null; }
+      function restart() { stop(); start(); }
+      root.addEventListener('mouseenter', stop);
+      root.addEventListener('mouseleave', start);
+      root.addEventListener('focusin', stop);
+      root.addEventListener('focusout', start);
+
+      render(0); start();
+    });
+  </script>
 </body>
 </html>

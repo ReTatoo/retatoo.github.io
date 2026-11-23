@@ -271,7 +271,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 
 /* Boarmo：メモ紙ぺたっ＋画鋲 */
 .work[data-anim="paper"] .work-visual {
-  --v: clamp(0, calc(var(--p, 1) * 1.8), 1);
+  --v: clamp(0, calc(var(--p, 1) * 1.25), 1);
   opacity: var(--v);
   translate: 0 calc((1 - var(--v)) * -48px);
   rotate: calc((1 - var(--v)) * -5deg);
@@ -281,7 +281,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
   position: absolute; top: 14px; left: 50%; z-index: 3; width: 22px; height: 22px; margin-left: -11px;
   border-radius: 50%; background: var(--red);
   box-shadow: inset -3px -3px 0 rgba(0,0,0,.18), 3px 4px 0 rgba(23,23,25,.18);
-  --w: clamp(0, calc((var(--p, 1) - .55) * 4), 1);
+  --w: clamp(0, calc((var(--p, 1) - .8) * 6), 1);
   opacity: var(--w);
   scale: calc(1 + (1 - var(--w)) * 1.4);
   translate: 0 calc((1 - var(--w)) * -24px);
@@ -354,7 +354,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .scene-work .slider-bar,
 .scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
 .scene-contact .scene-inner > * {
-  --q: clamp(0, calc((var(--p, 1) - var(--s, 0)) * 3.2), 1);
+  --q: clamp(0, calc((var(--p, 1) - var(--s, 0)) * 2.4), 1);
   opacity: var(--q);
   translate: 0 calc((1 - var(--q)) * 30px);
 }

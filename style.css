@@ -1,5 +1,7 @@
 /* ===== カラー（ここを変えるとサイト全体の色が変わります） ===== */
 :root {
+  --nav: 64px;
+  --bar: 76px;
   --navy:   #071D30;  /* ネイビー */
   --black:  #171719;  /* ブラック */
   --teal:   #13B9B0;  /* ターコイズ */
@@ -23,7 +25,7 @@ img { display: block; max-width: 100%; }
 
 /* ===== Nav ===== */
 .nav {
-  position: sticky; top: 0; z-index: 10;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10; height: var(--nav);
   display: flex; justify-content: space-between; align-items: center;
   padding: 14px clamp(16px, 5vw, 40px);
   background: var(--navy); color: #fff;
@@ -148,7 +150,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 
 
 /* ===== Contact ===== */
-.contact { background: var(--navy); color: #fff; margin-top: clamp(64px, 10vw, 110px); padding: clamp(56px, 9vw, 96px) 0; }
+.contact { background: var(--navy); color: #fff; }
 .contact h2 { color: #fff; }
 .contact p { color: #B5C2CE; margin: 8px 0 28px; }
 
@@ -172,7 +174,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .features li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
 .proof { font-size: .9rem; color: var(--navy); margin-bottom: 16px; }
 .proof b { color: var(--red); }
-.work { align-items: start; }
+.work { align-items: center; }
 .work-visual.shot { background: var(--black); }
 .dl { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; margin-top: 18px; }
 .dl .more { margin-top: 0; }
@@ -312,4 +314,99 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 @media (prefers-reduced-motion: reduce) {
   .tilt { transform: none !important; }
   .tilt::after { display: none; }
+}
+
+/* =====================================================
+   シーン構成：1スクロール＝1シーン
+   ===================================================== */
+@media (min-width: 900px) and (min-height: 600px) {
+  html { scroll-snap-type: y mandatory; }
+}
+.scene {
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+  scroll-snap-align: start; scroll-snap-stop: always;
+}
+.scene-inner { width: 100%; }
+
+/* Hi */
+.scene-hero { background: var(--navy); padding-top: var(--nav); }
+.scene-hero .hero { flex: 1; display: flex; align-items: center; }
+.scene-hero .hero-inner { width: 100%; padding-top: 24px; padding-bottom: 24px; }
+
+/* 章（Works / How I make / About） */
+.chapter { position: relative; scroll-snap-align: start; }
+.chapter-bar {
+  position: sticky; top: var(--nav); z-index: 5; height: var(--bar);
+  display: flex; align-items: center;
+  background: rgba(243, 241, 235, var(--bg-o, 0));
+  box-shadow: 0 1px 0 rgba(7, 29, 48, calc(var(--bg-o, 0) * .1));
+}
+.chapter-bar .wrap { width: 100%; }
+.chapter-title {
+  display: inline-flex; align-items: baseline; gap: 6px 16px; flex-wrap: wrap;
+  transform-origin: left center; will-change: transform;
+}
+.chapter-title h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); }
+.chapter-title p { color: var(--muted); font-size: .9rem; }
+.chapter-title .num { font-size: .95rem; }
+.scene-title { min-height: calc(100vh - var(--bar)); min-height: calc(100svh - var(--bar)); scroll-snap-align: none; }
+.chapter .scene:not(.scene-title) { padding: calc(var(--nav) + var(--bar) + 16px) 0 32px; }
+
+/* 作品シーン：1画面に収まるようにコンパクトに */
+.scene-work .work { margin-bottom: 0; gap: clamp(24px, 4vw, 56px); }
+.scene-work .work-desc { margin-bottom: 12px; }
+.scene-work .idea { margin-bottom: 12px; padding: 10px 14px; font-size: .86rem; line-height: 1.7; }
+.scene-work .features { margin-bottom: 12px; gap: 2px; }
+.scene-work .features li { font-size: .86rem; line-height: 1.7; }
+.scene-work .proof { margin-bottom: 12px; font-size: .86rem; }
+.scene-work .dl { margin-top: 14px; }
+.scene-work .note { margin-top: 8px; }
+
+/* STEP：順番に出てくる */
+.scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
+.scene-contact .scene-inner > * { opacity: 0; translate: 0 28px; }
+.scene.in .step, .scene.in .profile, .scene.in .about-body > *, .scene.in .scene-inner > * {
+  opacity: 1; translate: 0 0;
+  transition: opacity .7s var(--d, 0s) ease-out, translate .7s var(--d, 0s) cubic-bezier(.2,.8,.2,1);
+}
+.scene-steps .step:nth-child(1) { --d: .1s; }
+.scene-steps .step:nth-child(2) { --d: .45s; }
+.scene-steps .step:nth-child(3) { --d: .8s; }
+.scene-steps .step-dot { scale: 0; }
+.scene-steps.in .step-dot { animation: dotPop .55s calc(var(--d) + .3s) cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes dotPop { from { scale: 0; } to { scale: 1; } }
+.scene-steps .step { padding: 32px 28px 34px; }
+.scene-steps .step h3 { font-size: 1.5rem; }
+.scene-about .profile { --d: .1s; }
+.scene-about .about-body > *:nth-child(1) { --d: .3s; }
+.scene-about .about-body > *:nth-child(2) { --d: .45s; }
+.scene-about .about-body > *:nth-child(3) { --d: .6s; }
+.scene-contact .scene-inner > *:nth-child(2) { --d: .12s; }
+.scene-contact .scene-inner > *:nth-child(3) { --d: .24s; }
+.scene-contact .scene-inner > *:nth-child(4) { --d: .36s; }
+
+/* Contact（最後のシーン） */
+.scene-contact { padding-top: var(--nav); }
+.scene-contact .scene-inner { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+.scene-contact h2 { font-size: clamp(2.6rem, 8vw, 4.5rem); }
+
+@media (max-height: 880px) and (min-width: 761px) {
+  .chapter .scene:not(.scene-title) { padding: calc(var(--nav) + var(--bar) + 4px) 0 12px; }
+  .scene-work .work-meta { font-size: .8rem; }
+  .scene-work .work h3 { margin: 0 0 8px; }
+  .scene-work .work-desc { font-size: .92rem; line-height: 1.7; margin-bottom: 10px; }
+  .scene-work .idea, .scene-work .features li, .scene-work .proof { line-height: 1.6; }
+  .scene-work .idea, .scene-work .features, .scene-work .proof { margin-bottom: 10px; }
+  .scene-work .dl { margin-top: 12px; }
+  .scene-work .small-btn { padding: 10px 20px; }
+  .scene-work .note { font-size: .75rem; }
+}
+@media (max-width: 760px) {
+  :root { --bar: 64px; }
+  .chapter .scene:not(.scene-title) { padding-bottom: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
+  .scene-contact .scene-inner > *, .scene-steps .step-dot { opacity: 1 !important; translate: none !important; scale: 1 !important; }
 }

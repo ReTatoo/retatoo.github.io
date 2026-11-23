@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261123c">
+  <link rel="stylesheet" href="style.css?v=20261123d">
 </head>
 <body class="intro">
   <header class="nav">
@@ -25,200 +25,217 @@
     </nav>
   </header>
 
-  <!-- ========== Hero ========== -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <p class="hello">Hi, I'm ReTatoo.</p>
-        <h1>アイデアひとつで、<br><span class="hl">AIと</span>アプリを<br>つくっています。</h1>
-        <p class="lead">すごい技術はありません。あるのは「こんなのあったらいいな」だけ。<br>思いついたものを、生成AIと一緒にかたちにしています。</p>
-        <a href="#works" class="btn">作品を見る <span aria-hidden="true">→</span></a>
+  <!-- ========== Scene: Hi ========== -->
+  <div class="scene scene-hero">
+    <!-- ========== Hero ========== -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <p class="hello">Hi, I'm ReTatoo.</p>
+          <h1>アイデアひとつで、<br><span class="hl">AIと</span>アプリを<br>つくっています。</h1>
+          <p class="lead">すごい技術はありません。あるのは「こんなのあったらいいな」だけ。<br>思いついたものを、生成AIと一緒にかたちにしています。</p>
+          <a href="#works" class="btn">作品を見る <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <span class="hd hd1"></span>
+          <span class="hd hd2"></span>
+          <span class="hd hd3"><i class="ripple"></i><i class="ripple r2"></i></span>
+        </div>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <span class="hd hd1"></span>
-        <span class="hd hd2"></span>
-        <span class="hd hd3"><i class="ripple"></i><i class="ripple r2"></i></span>
+    </section>
+
+    <!-- ========== Concept ========== -->
+    <section class="concept">
+      <div class="wrap concept-inner">
+        <p class="concept-word"><b>Re</b>Tatoo</p>
+        <p class="concept-text"><b>「Re」</b>は “もう一度”。<br>何度でも使いたくなるものを、何度でもつくり直しながら。名前にはそんな想いを込めています。</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== Works（タイトル → Blonica → Boarmo → Talee） ========== -->
+  <!-- 作品を増やすときは、scene-work を1つコピーして中の article を差し替えます -->
+  <section id="works" class="chapter">
+    <div class="chapter-bar">
+      <div class="wrap">
+        <div class="chapter-title"><span class="num">01</span><h2>Works</h2><p>AIと一緒につくったもの</p></div>
       </div>
     </div>
-  </section>
-
-  <!-- ========== Concept ========== -->
-  <section class="concept">
-    <div class="wrap concept-inner">
-      <p class="concept-word"><b>Re</b>Tatoo</p>
-      <p class="concept-text"><b>「Re」</b>は “もう一度”。<br>何度でも使いたくなるものを、何度でもつくり直しながら。名前にはそんな想いを込めています。</p>
-    </div>
-  </section>
-
-  <main class="wrap">
-    <!-- ========== Works ========== -->
-    <section id="works" class="section">
-      <div class="section-head">
-        <span class="num">01</span>
-        <h2>Works</h2>
-        <p>AIと一緒につくったもの</p>
-      </div>
-
-      <!-- ▼ 作品ひとつ分：この <article> をコピーすると作品を増やせます -->
-      <article class="work" data-anim="pixel">
-        <div class="work-visual shot tilt">
-          <img src="assets/works/blonica-1.webp" alt="Blonica のプレイ画面。7×7の盤面に敵が並び、手札のルーンカードを置こうとしている" width="1600" height="1200" loading="lazy">
-        </div>
-        <div class="work-body">
-          <p class="work-meta">2026 ・ PC Game ・ 無料配布中</p>
-          <h3>Blonica</h3>
-          <p class="work-desc">薄暗いダンジョンの中、４タイル分の形をしたルーンカードを駆使して<br>盤面上の敵を倒す、ドットアートローグライト。<br>強化と圧縮の取捨選択を繰り返し、高みを目指してください。</p>
-          <ul class="stack"><li>Roguelite</li><li>Pixel Art</li><li>Godot</li><li>Claude Code</li></ul>
-          <div class="dl">
-            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/blonica-v1.0/Blonica-v0.26-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 37MB</span></a>
-            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/blonica-v1.0" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
-          </div>
-        </div>
-      </article>
-      <!-- ▲ ここまで -->
-
-      <article class="work reverse" data-anim="paper">
-        <div class="work-visual shot shot-light tilt">
-          <img src="assets/works/boarmo-1.webp" alt="Boarmo の画面。方眼紙のボードにカフェの企画メモが何枚も貼られ、矢印でつながっている" width="1600" height="1200" loading="lazy">
-          <span class="pin" aria-hidden="true"></span>
-        </div>
-        <div class="work-body">
-          <p class="work-meta">2026 ・ Windows App ・ 開発版を配布中</p>
-          <h3>Boarmo <small>ボーモ</small></h3>
-          <p class="work-desc">無限に広がる方眼紙。何枚も貼れるメモ。<br>１マス１文字。</p>
-          <p class="idea"><b>Idea</b>文字をきれいに揃えたい！<br>ただそれだけを考え、とある表計算ソフトを参考。</p>
-          <ul class="features">
-            <li>方眼のマス１文字ずつ書き込める</li>
-            <li>メモ紙はマス目に吸着。画鋲でロックも可能</li>
-            <li>直感的にわかりやすいユーティリティアイコン</li>
-          </ul>
-          <ul class="stack"><li>Windows</li><li>Tauri</li><li>React</li><li>Claude Code</li></ul>
-          <div class="dl">
-            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/boarmo-v0.1/Boarmo-v0.1.0-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 2MB</span></a>
-            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/boarmo-v0.1" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
-          </div>
-          <p class="note">※ 開発版です。初回起動時に Windows の警告が出たら「詳細情報」→「実行」を押してください。</p>
-        </div>
-      </article>
-
-      <article class="work" data-anim="type">
-        <div class="work-media slider" data-slider>
+    <div class="scene scene-title" aria-hidden="true"></div>
+    <div class="scene scene-work">
+      <div class="wrap scene-inner">
+        <article class="work" data-anim="pixel">
           <div class="work-visual shot tilt">
-            <div class="slides" tabindex="0" aria-label="Talee のスクリーンショット（左右にスワイプで切り替え）">
-              <figure class="slide"><img src="assets/works/talee-1.webp" alt="Talee の本文エディタ。セリフ・心の声・地の文が色分けされ、右側にこの話の登場人物と伏線が表示されている" width="1600" height="1200" loading="lazy"></figure>
-              <figure class="slide"><img src="assets/works/talee-2.webp" alt="本文中のキャラ名「カイ」にマウスを乗せ、設定メモがポップアップしている" width="1600" height="1200" loading="lazy"></figure>
-              <figure class="slide"><img src="assets/works/talee-3.webp" alt="伏線「青い封筒の差出人」の張った箇所と回収した箇所が右パネルに並んでいる" width="1600" height="1200" loading="lazy"></figure>
-            </div>
-            <button class="slide-btn prev" type="button" aria-label="前の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-            <button class="slide-btn next" type="button" aria-label="次の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <img src="assets/works/blonica-1.webp" alt="Blonica のプレイ画面。7×7の盤面に敵が並び、手札のルーンカードを置こうとしている" width="1600" height="1200" loading="lazy">
           </div>
-          <div class="slider-bar">
-            <p class="slide-cap" aria-live="polite"></p>
-            <div class="dots" role="tablist"></div>
-          </div>
-          <template class="caps">
-            <span>セリフ・心の声・地の文を色分け。文字数や割合もリアルタイムに</span>
-            <span>キャラ名にマウスを乗せるだけで、設定メモを確認</span>
-            <span>伏線の「張った箇所」と「回収した箇所」をひと目で</span>
-          </template>
-        </div>
-        <div class="work-body">
-          <p class="work-meta">2026 ・ Windows App ・ 無料配布中</p>
-          <h3>Talee <small>タリー</small></h3>
-          <p class="work-desc">長編小説の執筆と、キャラクター・世界観・伏線などの<br>設定管理をひとつにまとめた、Windows用の小説執筆アプリ。</p>
-          <p class="idea"><b>Idea</b>とあるテキストエディタで長編を書いていたら、<br>1話ごとの文章の密度が測りにくく、<br>登場人物や設定もその場で確認できない。<br>だから、物語の整合性を保ちながら書くための道具を自分用につくりました。</p>
-          <ul class="features">
-            <li>セリフ・心の声・強調を色分けする本文エディタ。文字数やセリフの割合もリアルタイム表示</li>
-            <li>登録したキャラや用語が本文に出ると自動リンク。マウスを乗せるだけでメモを確認</li>
-            <li>伏線の「張った／回収した」管理、複数の時系列、話ごとの密度グラフ</li>
-          </ul>
-          <p class="proof">実際に <b>88話・約15万字</b> の長編の執筆に使いながら、改善を続けています</p>
-          <ul class="stack"><li>Windows</li><li>Tauri</li><li>React</li><li>SQLite</li><li>Claude Code</li></ul>
-          <div class="dl">
-            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/talee-v1.6/Talee-v1.6.1-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 8MB</span></a>
-            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/talee-v1.6" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
-          </div>
-          <p class="note">※ 初回起動時に Windows の警告が出たら「詳細情報」→「実行」を押してください。</p>
-        </div>
-      </article>
-    </section>
-
-    <!-- ========== How ========== -->
-    <section id="how" class="section">
-      <div class="section-head">
-        <span class="num">02</span>
-        <h2>How I make</h2>
-        <p>つくり方は、とてもシンプル</p>
-      </div>
-
-      <ol class="steps">
-        <li class="step">
-          <span class="step-dot d1"></span>
-          <p class="step-no">STEP 1</p>
-          <h3>思いつく</h3>
-          <p>日常の「これ、あったら便利かも」「つくってみたい」を拾います。ここが一番大事なところ。</p>
-        </li>
-        <li class="step">
-          <span class="step-dot d2"></span>
-          <p class="step-no">STEP 2</p>
-          <h3>AIに伝える</h3>
-          <p>Claude Code などの生成AIに、やりたいことを言葉で伝えます。コードを書くのはAIの担当です。</p>
-        </li>
-        <li class="step">
-          <span class="step-dot d3"></span>
-          <p class="step-no">STEP 3</p>
-          <h3>使って、また直す</h3>
-          <p>実際に使ってみて、気になったところをまたAIに頼む。この「Re」をくり返して育てていきます。</p>
-        </li>
-      </ol>
-    </section>
-
-    <!-- ========== About ========== -->
-    <section id="about" class="section">
-      <div class="section-head">
-        <span class="num">03</span>
-        <h2>About</h2>
-        <p>つくっている人のこと</p>
-      </div>
-
-      <div class="about">
-        <div class="profile">
-          <img src="icon.svg" alt="ReTatoo のアイコン" width="120" height="120">
-          <p class="name">ReTatoo</p>
-          <p class="role">Idea Maker × Generative AI</p>
-        </div>
-        <div class="about-body">
-          <p>特別なプログラミングの技術や、これといった特技があるわけではありません。</p>
-          <p>「つくりたい」と思ったものを、つくりたいときに、生成AIにつくってもらっている人間です。勝負しているのは技術ではなく、アイデア。思いつきを、その日のうちに動くアプリにできる時代を楽しんでいます。</p>
-
-          <div class="skills">
-            <div>
-              <h4>Partner</h4>
-              <ul class="stack"><li>Claude Code</li><li>Generative AI</li></ul>
-            </div>
-            <div>
-              <h4>My part</h4>
-              <ul class="stack"><li>アイデア</li><li>企画</li><li>使ってみる</li></ul>
+          <div class="work-body">
+            <p class="work-meta">2026 ・ PC Game ・ 無料配布中</p>
+            <h3>Blonica</h3>
+            <p class="work-desc">薄暗いダンジョンの中、<br>４タイル分の形をしたルーンカードを駆使して<br>盤面上の敵を倒す、ドットアートローグライト。<br>強化と圧縮の取捨選択を繰り返し、高みを目指してください。</p>
+            <ul class="stack"><li>Roguelite</li><li>Pixel Art</li><li>Godot</li><li>Claude Code</li></ul>
+            <div class="dl">
+              <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/blonica-v1.0/Blonica-v0.26-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 37MB</span></a>
+              <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/blonica-v1.0" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
             </div>
           </div>
+        </article>
+      </div>
+    </div>
+    <div class="scene scene-work">
+      <div class="wrap scene-inner">
+        <article class="work reverse" data-anim="paper">
+          <div class="work-visual shot shot-light tilt">
+            <img src="assets/works/boarmo-1.webp" alt="Boarmo の画面。方眼紙のボードにカフェの企画メモが何枚も貼られ、矢印でつながっている" width="1600" height="1200" loading="lazy">
+            <span class="pin" aria-hidden="true"></span>
+          </div>
+          <div class="work-body">
+            <p class="work-meta">2026 ・ Windows App ・ 開発版を配布中</p>
+            <h3>Boarmo <small>ボーモ</small></h3>
+            <p class="work-desc">無限に広がる方眼紙。何枚も貼れるメモ。<br>１マス１文字。</p>
+            <p class="idea"><b>Idea</b>文字をきれいに揃えたい！<br>ただそれだけを考え、とある表計算ソフトを参考。</p>
+            <ul class="features">
+              <li>方眼のマス１文字ずつ書き込める</li>
+              <li>メモ紙はマス目に吸着。画鋲でロックも可能</li>
+              <li>直感的にわかりやすいユーティリティアイコン</li>
+            </ul>
+            <ul class="stack"><li>Windows</li><li>Tauri</li><li>React</li><li>Claude Code</li></ul>
+            <div class="dl">
+              <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/boarmo-v0.1/Boarmo-v0.1.0-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 2MB</span></a>
+              <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/boarmo-v0.1" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
+            </div>
+            <p class="note">※ 開発版です。初回起動時に Windows の警告が出たら「詳細情報」→「実行」を押してください。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="scene scene-work">
+      <div class="wrap scene-inner">
+        <article class="work" data-anim="type">
+          <div class="work-media slider" data-slider>
+            <div class="work-visual shot tilt">
+              <div class="slides" tabindex="0" aria-label="Talee のスクリーンショット（左右にスワイプで切り替え）">
+                <figure class="slide"><img src="assets/works/talee-1.webp" alt="Talee の本文エディタ。セリフ・心の声・地の文が色分けされ、右側にこの話の登場人物と伏線が表示されている" width="1600" height="1200" loading="lazy"></figure>
+                <figure class="slide"><img src="assets/works/talee-2.webp" alt="本文中のキャラ名「カイ」にマウスを乗せ、設定メモがポップアップしている" width="1600" height="1200" loading="lazy"></figure>
+                <figure class="slide"><img src="assets/works/talee-3.webp" alt="伏線「青い封筒の差出人」の張った箇所と回収した箇所が右パネルに並んでいる" width="1600" height="1200" loading="lazy"></figure>
+              </div>
+              <button class="slide-btn prev" type="button" aria-label="前の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button class="slide-btn next" type="button" aria-label="次の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+            <div class="slider-bar">
+              <p class="slide-cap" aria-live="polite"></p>
+              <div class="dots" role="tablist"></div>
+            </div>
+            <template class="caps">
+              <span>セリフ・心の声・地の文を色分け。文字数や割合もリアルタイムに</span>
+              <span>キャラ名にマウスを乗せるだけで、設定メモを確認</span>
+              <span>伏線の「張った箇所」と「回収した箇所」をひと目で</span>
+            </template>
+          </div>
+          <div class="work-body">
+            <p class="work-meta">2026 ・ Windows App ・ 無料配布中</p>
+            <h3>Talee <small>タリー</small></h3>
+            <p class="work-desc">長編小説の執筆と、キャラクター・世界観・伏線などの<br>設定管理をひとつにまとめた、Windows用の小説執筆アプリ。</p>
+            <p class="idea"><b>Idea</b>とあるテキストエディタで長編を書いていたら、<br>1話ごとの文章の密度が測りにくく、<br>登場人物や設定もその場で確認できない。<br>だから、物語の整合性を保ちながら書くための道具を自分用につくりました。</p>
+            <ul class="features">
+              <li>セリフ・心の声・強調を色分けする本文エディタ。文字数やセリフの割合もリアルタイム表示</li>
+              <li>登録したキャラや用語が本文に出ると自動リンク。マウスを乗せるだけでメモを確認</li>
+              <li>伏線の「張った／回収した」管理、複数の時系列、話ごとの密度グラフ</li>
+            </ul>
+            <p class="proof">実際に <b>88話・約15万字</b> の長編の執筆に使いながら、改善を続けています</p>
+            <ul class="stack"><li>Windows</li><li>Tauri</li><li>React</li><li>SQLite</li><li>Claude Code</li></ul>
+            <div class="dl">
+              <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/talee-v1.6/Talee-v1.6.1-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 8MB</span></a>
+              <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/talee-v1.6" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
+            </div>
+            <p class="note">※ 初回起動時に Windows の警告が出たら「詳細情報」→「実行」を押してください。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== How I make（タイトル → STEP） ========== -->
+  <section id="how" class="chapter">
+    <div class="chapter-bar">
+      <div class="wrap">
+        <div class="chapter-title"><span class="num">02</span><h2>How I make</h2><p>つくり方は、とてもシンプル</p></div>
+      </div>
+    </div>
+    <div class="scene scene-title" aria-hidden="true"></div>
+    <div class="scene scene-steps">
+      <div class="wrap scene-inner">
+        <ol class="steps">
+          <li class="step">
+            <span class="step-dot d1"></span>
+            <p class="step-no">STEP 1</p>
+            <h3>思いつく</h3>
+            <p>日常の「これ、あったら便利かも」「つくってみたい」を拾います。ここが一番大事なところ。</p>
+          </li>
+          <li class="step">
+            <span class="step-dot d2"></span>
+            <p class="step-no">STEP 2</p>
+            <h3>AIに伝える</h3>
+            <p>Claude Code などの生成AIに、やりたいことを言葉で伝えます。コードを書くのはAIの担当です。</p>
+          </li>
+          <li class="step">
+            <span class="step-dot d3"></span>
+            <p class="step-no">STEP 3</p>
+            <h3>使って、また直す</h3>
+            <p>実際に使ってみて、気になったところをまたAIに頼む。この「Re」をくり返して育てていきます。</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== About（タイトル → 説明文） ========== -->
+  <section id="about" class="chapter">
+    <div class="chapter-bar">
+      <div class="wrap">
+        <div class="chapter-title"><span class="num">03</span><h2>About</h2><p>つくっている人のこと</p></div>
+      </div>
+    </div>
+    <div class="scene scene-title" aria-hidden="true"></div>
+    <div class="scene scene-about">
+      <div class="wrap scene-inner">
+        <div class="about">
+          <div class="profile">
+            <img src="icon.svg" alt="ReTatoo のアイコン" width="120" height="120">
+            <p class="name">ReTatoo</p>
+            <p class="role">Idea Maker × Generative AI</p>
+          </div>
+          <div class="about-body">
+            <p>特別なプログラミングの技術や、これといった特技があるわけではありません。</p>
+            <p>「つくりたい」と思ったものを、つくりたいときに、生成AIにつくってもらっている人間です。勝負しているのは技術ではなく、アイデア。思いつきを、その日のうちに動くアプリにできる時代を楽しんでいます。</p>
+
+            <div class="skills">
+              <div>
+                <h4>Partner</h4>
+                <ul class="stack"><li>Claude Code</li><li>Generative AI</li></ul>
+              </div>
+              <div>
+                <h4>My part</h4>
+                <ul class="stack"><li>アイデア</li><li>企画</li><li>使ってみる</li></ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
   <!-- ========== Contact ========== -->
-  <section id="contact" class="contact">
-    <div class="wrap">
-      <span class="num light">04</span>
+  <section id="contact" class="scene scene-contact contact">
+    <div class="wrap scene-inner">
+        <span class="num light">04</span>
       <h2>Contact</h2>
       <p>感想や「こんなの欲しい」というアイデアも大歓迎です。GitHub からどうぞ。</p>
       <a href="https://github.com/ReTatoo" class="btn" target="_blank" rel="noopener">GitHub @ReTatoo <span aria-hidden="true">→</span></a>
     </div>
+    <footer class="footer">
+      <p>© <span id="year"></span> ReTatoo ・ Built with Claude Code</p>
+    </footer>
   </section>
-
-  <footer class="footer">
-    <p>© <span id="year"></span> ReTatoo ・ Built with Claude Code</p>
-  </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
@@ -233,6 +250,49 @@
     <button class="lb-next slide-btn" type="button" aria-label="次の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <p class="lb-cap"></p>
   </dialog>
+
+  <script>
+    /* ---- 章タイトル：最初は中央に大きく → 次のシーンで上に移動して見出しバーに ---- */
+    (function () {
+      var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+      var navH = 64, ticking = false;
+      function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+      function update() {
+        ticking = false;
+        var vh = window.innerHeight;
+        chapters.forEach(function (ch) {
+          var bar = ch.querySelector('.chapter-bar');
+          var title = ch.querySelector('.chapter-title');
+          var barH = bar.offsetHeight;
+          var r = ch.getBoundingClientRect();
+          var p = Math.min(1, Math.max(0, -r.top / (vh - barH)));
+          var e = ease(p);
+          var wrap = title.parentElement, cs = getComputedStyle(wrap);
+          var cw = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+          var w = title.offsetWidth;
+          var s0 = Math.min(window.innerWidth < 760 ? 1.5 : 2.4, (cw * 0.96) / w);
+          var cx = (cw - w * s0) / 2;
+          var cy = (vh - navH - barH) / 2;
+          var sc = s0 + (1 - s0) * e;
+          title.style.transform = 'translate(' + (cx * (1 - e)).toFixed(1) + 'px,' + (cy * (1 - e)).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+          bar.style.setProperty('--bg-o', e.toFixed(3));
+        });
+      }
+      function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+      update();
+
+      /* STEP・About・Contact：シーンに入ったら順番に表示 */
+      var targets = document.querySelectorAll('.scene-steps, .scene-about, .scene-contact');
+      if (!('IntersectionObserver' in window)) { targets.forEach(function (t) { t.classList.add('in'); }); return; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      }, { threshold: 0.45 });
+      targets.forEach(function (t) { io.observe(t); });
+    })();
+  </script>
 
   <script>
     /* ---- Works：作品ごとの登場演出 ＋ 3D傾き ---- */

@@ -388,33 +388,37 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
       update();
 
-      /* Blonica → Boarmo → Talee の間だけ：スクロールが止まったら、近い作品にぴったり合わせる */
+      /* ページ全体：スクロールが止まったら、近いシーンにぴったり合わせる（パソコンの画面だけ） */
       (function () {
-        var works = Array.prototype.slice.call(document.querySelectorAll('.scene-work'));
+        var scenesAll = Array.prototype.slice.call(document.querySelectorAll('.scene'));
         var big = window.matchMedia('(min-width: 900px) and (min-height: 600px)');
-        if (works.length < 2) return;
-        var timer = null, snapping = false, lastY = window.scrollY, dir = 0, lastIdx = -1;
-        function tops() { return works.map(function (w) { return Math.round(w.getBoundingClientRect().top + window.scrollY); }); }
+        var timer = null, snapping = false, lastY = window.scrollY, dir = 0;
+        function points() {
+          var max = document.documentElement.scrollHeight - window.innerHeight;
+          return scenesAll.map(function (sc) {
+            /* 章のタイトルシーンは、章の先頭（見出しバーの位置）に合わせる */
+            var el = sc.classList.contains('scene-title') ? sc.parentElement : sc;
+            return Math.min(max, Math.round(el.getBoundingClientRect().top + window.scrollY));
+          });
+        }
         function settle() {
           if (!big.matches) return;
-          var y = window.scrollY, t = tops(), first = t[0], last = t[t.length - 1];
-          if (y < first - 2 || y > last + 2) { lastIdx = -1; return; }   /* 作品エリアの外では何もしない */
+          var y = window.scrollY, t = points();
           var f = 0;
-          for (var i = 0; i < t.length - 1; i++) if (y >= t[i]) f = i + (y - t[i]) / (t[i + 1] - t[i]);
-          if (y >= last) f = t.length - 1;
+          for (var i = 0; i < t.length - 1; i++) if (y >= t[i]) f = i + Math.min(1, (y - t[i]) / Math.max(1, t[i + 1] - t[i]));
+          if (y >= t[t.length - 1]) f = t.length - 1;
           var base = Math.floor(f), frac = f - base, idx;
-          /* 進んだ向きに 12% 以上動いていたら次（前）の作品へ */
+          /* 進んだ向きに 12% 以上動いていたら次（前）のシーンへ */
           if (dir > 0) idx = frac > 0.12 ? base + 1 : base;
           else if (dir < 0) idx = frac < 0.88 ? base : base + 1;
           else idx = Math.round(f);
           idx = Math.max(0, Math.min(t.length - 1, idx));
-          if (Math.abs(t[idx] - y) < 2) { lastIdx = idx; return; }
-          snapping = true; lastIdx = idx;
+          if (Math.abs(t[idx] - y) < 2) return;
+          snapping = true;
           window.scrollTo({ top: t[idx], behavior: reduce ? 'auto' : 'smooth' });
-          var guard = setTimeout(function () { snapping = false; }, 900);
-          var check = function () {
-            if (Math.abs(window.scrollY - t[idx]) < 2) { snapping = false; clearTimeout(guard); window.removeEventListener('scroll', check); }
-          };
+          var guard = setTimeout(done, 1000);
+          function done() { snapping = false; clearTimeout(guard); window.removeEventListener('scroll', check); }
+          function check() { if (Math.abs(window.scrollY - t[idx]) < 2) done(); }
           window.addEventListener('scroll', check, { passive: true });
         }
         window.addEventListener('scroll', function () {

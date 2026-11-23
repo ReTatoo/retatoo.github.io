@@ -12,9 +12,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261123">
+  <link rel="stylesheet" href="style.css?v=20261123b">
 </head>
-<body>
+<body class="intro">
   <header class="nav">
     <a href="#" class="logo"><img src="icon.svg" alt="" width="36" height="36"><span>ReTat<span class="oo">oo</span></span></a>
     <nav>
@@ -35,10 +35,9 @@
         <a href="#works" class="btn">作品を見る <span aria-hidden="true">→</span></a>
       </div>
       <div class="hero-art" aria-hidden="true">
-        <div class="shape s-circle"></div>
-        <div class="shape s-square"></div>
-        <div class="shape s-ring"></div>
-        <div class="hero-icon"><img src="icon.svg" alt=""></div>
+        <span class="hd hd1"></span>
+        <span class="hd hd2"></span>
+        <span class="hd hd3"><i class="ripple"></i><i class="ripple r2"></i></span>
       </div>
     </div>
   </section>
@@ -68,7 +67,7 @@
         <div class="work-body">
           <p class="work-meta">2026 ・ PC Game ・ 無料配布中</p>
           <h3>Blonica</h3>
-          <p class="work-desc">ネオンに光るダンジョンで、4マスの形をしたルーンカードを 7×7 の盤面に置いて敵をたおす、ドット絵のローグライト。強化と取捨選択をくり返しながら、最大40セッションのどこまで進めるかに挑みます。</p>
+          <p class="work-desc">薄暗いダンジョンの中、４タイル分の形をしたルーンカードを駆使して<br>盤面上の敵を倒す、ドットアートローグライト。<br>強化と圧縮の取捨選択を繰り返し、高みを目指してください。</p>
           <ul class="stack"><li>Roguelite</li><li>Pixel Art</li><li>Godot</li><li>Claude Code</li></ul>
           <div class="dl">
             <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/blonica-v1.0/Blonica-v0.26-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 37MB</span></a>
@@ -85,12 +84,12 @@
         <div class="work-body">
           <p class="work-meta">2026 ・ Windows App ・ 開発版を配布中</p>
           <h3>Boarmo <small>ボーモ</small></h3>
-          <p class="work-desc">無限に広がる方眼紙のボードに文字を書き込み、メモ紙を貼っていけるデスクトップ用メモアプリ。</p>
-          <p class="idea"><b>Idea</b>コルクボードにメモ紙を貼るような、自由に置いて動かせる感覚をデジタルで。画鋲を刺して固定する、という現実の手触りをそのまま操作にしました。</p>
+          <p class="work-desc">無限に広がる方眼紙。何枚も貼れるメモ。<br>１マス１文字。</p>
+          <p class="idea"><b>Idea</b>文字をきれいに揃えたい！<br>ただそれだけを考え、とある表計算ソフトを参考。</p>
           <ul class="features">
-            <li>方眼のマスに1文字ずつ書き込める（日本語入力にも対応）</li>
-            <li>メモ紙はマス目に吸着。画鋲の本数で「位置の固定」「編集ロック」を切り替え</li>
-            <li>マスの角や辺にだけ吸着する線・矢印、ラジオのチューナー風ズーム</li>
+            <li>方眼のマス１文字ずつ書き込める</li>
+            <li>メモ紙はマス目に吸着。画鋲でロックも可能</li>
+            <li>直感的にわかりやすいユーティリティアイコン</li>
           </ul>
           <ul class="stack"><li>Windows</li><li>Tauri</li><li>React</li><li>Claude Code</li></ul>
           <div class="dl">
@@ -123,18 +122,22 @@
           </template>
         </div>
         <div class="work-body">
-          <p class="work-meta">2026 ・ Windows App ・ v1.6 完成</p>
+          <p class="work-meta">2026 ・ Windows App ・ 無料配布中</p>
           <h3>Talee <small>タリー</small></h3>
-          <p class="work-desc">長編小説の執筆と、キャラクター・世界観・伏線などの設定管理をひとつにまとめた、Windows用の小説執筆アプリ。</p>
-          <p class="idea"><b>Idea</b>Notionで長編を書いていたら、1話ごとの文章の密度が測りにくく、登場人物や設定もその場で確認できない。だから、物語の整合性を保ちながら書くための道具を自分用につくりました。</p>
+          <p class="work-desc">長編小説の執筆と、キャラクター・世界観・伏線などの<br>設定管理をひとつにまとめた、Windows用の小説執筆アプリ。</p>
+          <p class="idea"><b>Idea</b>とあるテキストエディタで長編を書いていたら、<br>1話ごとの文章の密度が測りにくく、<br>登場人物や設定もその場で確認できない。<br>だから、物語の整合性を保ちながら書くための道具を自分用につくりました。</p>
           <ul class="features">
             <li>セリフ・心の声・強調を色分けする本文エディタ。文字数やセリフの割合もリアルタイム表示</li>
             <li>登録したキャラや用語が本文に出ると自動リンク。マウスを乗せるだけでメモを確認</li>
             <li>伏線の「張った／回収した」管理、複数の時系列、話ごとの密度グラフ</li>
           </ul>
-          <p class="proof">実際に <b>88話・約15万字</b> の長編の執筆に使いながら、改善を続けています。</p>
+          <p class="proof">実際に <b>88話・約15万字</b> の長編の執筆に使いながら、改善を続けています</p>
           <ul class="stack"><li>Windows</li><li>Tauri</li><li>React</li><li>SQLite</li><li>Claude Code</li></ul>
-          <span class="more soon">Coming soon</span>
+          <div class="dl">
+            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/download/talee-v1.6/Talee-v1.6.1-windows.zip" class="btn small-btn">ダウンロード <span class="dl-meta">Windows ・ 8MB</span></a>
+            <a href="https://github.com/ReTatoo/retatoo.github.io/releases/tag/talee-v1.6" class="more" target="_blank" rel="noopener">リリースページ <span aria-hidden="true">→</span></a>
+          </div>
+          <p class="note">※ 初回起動時に Windows の警告が出たら「詳細情報」→「実行」を押してください。</p>
         </div>
       </article>
     </section>
@@ -216,7 +219,10 @@
     <p>© <span id="year"></span> ReTatoo ・ Built with Claude Code</p>
   </footer>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    requestAnimationFrame(function () { requestAnimationFrame(function () { document.body.classList.add('ready'); }); });
+  </script>
   <dialog id="lightbox" class="lightbox" aria-label="拡大画像">
     <div class="lb-stage">
       <img src="" alt="">

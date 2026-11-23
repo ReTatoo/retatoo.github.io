@@ -56,13 +56,23 @@ h1 { font-size: clamp(1.9rem, 5.2vw, 3.3rem); line-height: 1.35; font-weight: 90
 .lead { color: #B5C2CE; font-size: clamp(.95rem, 2vw, 1.05rem); margin-bottom: 36px; }
 
 .hero-art { position: relative; aspect-ratio: 1; max-width: 380px; width: 100%; justify-self: center; }
-.shape { position: absolute; }
-.s-circle { width: 62%; aspect-ratio: 1; border-radius: 50%; background: var(--teal); top: 4%; right: 0; }
-.s-square { width: 34%; aspect-ratio: 1; background: var(--red); bottom: 6%; left: 4%; border-radius: 10px; }
-.s-ring   { width: 30%; aspect-ratio: 1; border-radius: 50%; border: 14px solid #fff; opacity: .15; top: 0; left: 8%; }
-.hero-icon {
-  position: absolute; width: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  background: var(--navy); border-radius: 26%; padding: 4%;
+/* 3つの丸：少しずつ大きく、ずっとゆらゆら */
+.hd { position: absolute; border-radius: 50%; animation: float 4.8s ease-in-out infinite; }
+.hd1 { width: 19%; aspect-ratio: 1; left: 8%;  top: 60%; background: var(--teal); opacity: .45; animation-delay: 0s; }
+.hd2 { width: 26%; aspect-ratio: 1; left: 31%; top: 40%; background: var(--teal); opacity: .85; animation-delay: -.6s; }
+.hd3 { width: 34%; aspect-ratio: 1; left: 60%; top: 14%; background: var(--red); animation-delay: -1.2s; }
+.ripple {
+  position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--red);
+  animation: ripple 3.2s ease-out infinite; opacity: 0;
+}
+.ripple.r2 { animation-delay: 1.6s; }
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-12%) scale(1.06); }
+}
+@keyframes ripple {
+  0%   { transform: scale(1);   opacity: .55; }
+  100% { transform: scale(1.9); opacity: 0; }
 }
 
 /* ===== Concept ===== */
@@ -147,7 +157,7 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 /* ===== Mobile ===== */
 @media (max-width: 760px) {
   .hero-inner { grid-template-columns: 1fr; }
-  .hero-art { max-width: 260px; order: -1; }
+  .hero-art { max-width: 220px; order: -1; }
   .work, .about, .steps { grid-template-columns: 1fr; }
   .work.reverse { grid-template-columns: 1fr; }
   .work.reverse .work-visual { order: 0; }
@@ -163,7 +173,6 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .proof { font-size: .9rem; color: var(--navy); margin-bottom: 16px; }
 .proof b { color: var(--red); }
 .work { align-items: start; }
-.work-visual { position: sticky; top: 90px; }
 .work-visual.shot { background: var(--black); }
 .dl { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; margin-top: 18px; }
 .dl .more { margin-top: 0; }
@@ -174,7 +183,6 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .note { font-size: .8rem; color: var(--muted); margin-top: 12px; }
 
 /* ===== Slider ===== */
-.work-media { position: sticky; top: 90px; }
 .work-media .work-visual { position: relative; top: auto; }
 .slides {
   display: flex; width: 100%; height: 100%;
@@ -186,22 +194,21 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .slide img { width: 100%; height: 100%; object-fit: cover; }
 .slide-btn {
   position: absolute; top: 50%; transform: translateY(-50%);
-  width: 48px; height: 64px; border: 0; padding: 0; cursor: pointer; background: none;
+  width: 30px; height: 40px; border: 0; padding: 0; cursor: pointer; background: none;
   color: #fff; opacity: 0; transition: opacity .2s;
   filter: drop-shadow(0 0 3px rgba(0,0,0,.75)) drop-shadow(0 0 1px rgba(0,0,0,.9));
 }
 .slide-btn svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.slide-btn.prev { left: 4px; }
-.slide-btn.next { right: 4px; }
+.slide-btn.prev { left: 8px; }
+.slide-btn.next { right: 8px; }
 .slider:hover .slide-btn, .slide-btn:focus-visible { opacity: 1; }
-@media (hover: none) { .slide-btn { opacity: 1; width: 36px; height: 48px; } }
+@media (hover: none) { .slide-btn { opacity: 1; width: 26px; height: 34px; } }
 .slider-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
 .slide-cap { font-size: .85rem; color: var(--muted); min-height: 1.5em; }
 .dots { display: flex; gap: 8px; flex-shrink: 0; }
 .dot { width: 10px; height: 10px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; background: #CFCBC0; transition: width .2s, background .2s; }
 .dot[aria-selected="true"] { width: 26px; border-radius: 999px; background: var(--red); }
 .slides:focus-visible { box-shadow: inset 0 0 0 3px var(--teal); }
-@media (max-width: 760px) { .work-media { position: static; } }
 
 /* ===== Lightbox ===== */
 .work-visual img { cursor: zoom-in; }
@@ -224,3 +231,29 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .lb-close:hover { opacity: 1; }
 .lb-close svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
 .lb-cap { position: fixed; bottom: 14px; left: 0; right: 0; text-align: center; color: #B5C2CE; font-size: .85rem; }
+
+/* ===== Intro (アクセス時・リロード時) ===== */
+.intro .nav,
+.intro .hello, .intro h1, .intro .lead, .intro .hero .btn,
+.intro .hd, .intro .concept { opacity: 0; }
+.intro.ready .nav { animation: fadeDown .6s ease-out both; }
+.intro.ready .hello { animation: fadeUp .7s .15s ease-out both; }
+.intro.ready h1     { animation: fadeUp .8s .28s ease-out both; }
+.intro.ready .lead  { animation: fadeUp .8s .45s ease-out both; }
+.intro.ready .hero .btn { animation: fadeUp .8s .6s ease-out both; }
+.intro.ready .hd1 { animation: pop .6s .55s cubic-bezier(.3,1.6,.5,1) both, float 4.8s 1.2s ease-in-out infinite; }
+.intro.ready .hd2 { animation: pop .6s .75s cubic-bezier(.3,1.6,.5,1) both, float 4.8s .6s ease-in-out infinite; }
+.intro.ready .hd3 { animation: pop .6s .95s cubic-bezier(.3,1.6,.5,1) both, float 4.8s 0s ease-in-out infinite; }
+.intro.ready .hd1 { --o: .45; } .intro.ready .hd2 { --o: .85; } .intro.ready .hd3 { --o: 1; }
+.intro.ready .concept { animation: fadeIn .8s 1s ease-out both; }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop      { from { opacity: 0; transform: scale(0); } to { opacity: var(--o, 1); transform: scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .intro .nav, .intro .hello, .intro h1, .intro .lead, .intro .hero .btn, .intro .hd, .intro .concept { opacity: 1; }
+  .intro.ready * { animation: none !important; }
+  .hd1 { opacity: .45; } .hd2 { opacity: .85; }
+  .hd, .ripple { animation: none; }
+}

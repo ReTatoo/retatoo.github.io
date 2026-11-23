@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261123b">
+  <link rel="stylesheet" href="style.css?v=20261123c">
 </head>
 <body class="intro">
   <header class="nav">
@@ -60,8 +60,8 @@
       </div>
 
       <!-- ▼ 作品ひとつ分：この <article> をコピーすると作品を増やせます -->
-      <article class="work">
-        <div class="work-visual shot">
+      <article class="work" data-anim="pixel">
+        <div class="work-visual shot tilt">
           <img src="assets/works/blonica-1.webp" alt="Blonica のプレイ画面。7×7の盤面に敵が並び、手札のルーンカードを置こうとしている" width="1600" height="1200" loading="lazy">
         </div>
         <div class="work-body">
@@ -77,9 +77,10 @@
       </article>
       <!-- ▲ ここまで -->
 
-      <article class="work reverse">
-        <div class="work-visual shot shot-light">
+      <article class="work reverse" data-anim="paper">
+        <div class="work-visual shot shot-light tilt">
           <img src="assets/works/boarmo-1.webp" alt="Boarmo の画面。方眼紙のボードにカフェの企画メモが何枚も貼られ、矢印でつながっている" width="1600" height="1200" loading="lazy">
+          <span class="pin" aria-hidden="true"></span>
         </div>
         <div class="work-body">
           <p class="work-meta">2026 ・ Windows App ・ 開発版を配布中</p>
@@ -100,9 +101,9 @@
         </div>
       </article>
 
-      <article class="work">
+      <article class="work" data-anim="type">
         <div class="work-media slider" data-slider>
-          <div class="work-visual shot">
+          <div class="work-visual shot tilt">
             <div class="slides" tabindex="0" aria-label="Talee のスクリーンショット（左右にスワイプで切り替え）">
               <figure class="slide"><img src="assets/works/talee-1.webp" alt="Talee の本文エディタ。セリフ・心の声・地の文が色分けされ、右側にこの話の登場人物と伏線が表示されている" width="1600" height="1200" loading="lazy"></figure>
               <figure class="slide"><img src="assets/works/talee-2.webp" alt="本文中のキャラ名「カイ」にマウスを乗せ、設定メモがポップアップしている" width="1600" height="1200" loading="lazy"></figure>
@@ -232,6 +233,105 @@
     <button class="lb-next slide-btn" type="button" aria-label="次の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <p class="lb-cap"></p>
   </dialog>
+
+  <script>
+    /* ---- Works：作品ごとの登場演出 ＋ 3D傾き ---- */
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var works = document.querySelectorAll('.work[data-anim]');
+      if (reduce || !('IntersectionObserver' in window)) return;
+
+      /* 共通：本文を順番にふわっと */
+      works.forEach(function (w) {
+        w.classList.add('pre');
+        Array.prototype.forEach.call(w.querySelector('.work-body').children, function (el, i) {
+          el.style.setProperty('--d', (0.35 + i * 0.08) + 's');
+        });
+      });
+
+      /* Blonica：ドットが集まって絵になる */
+      function pixel(w) {
+        var vis = w.querySelector('.work-visual');
+        var img = vis.querySelector('img');
+        var cv = document.createElement('canvas');
+        cv.className = 'pix';
+        vis.appendChild(cv);
+        var run = function () {
+          var W = vis.clientWidth, H = vis.clientHeight, dpr = window.devicePixelRatio || 1;
+          cv.width = W * dpr; cv.height = H * dpr;
+          var ctx = cv.getContext('2d');
+          var tmp = document.createElement('canvas'), tctx = tmp.getContext('2d');
+          var steps = [6, 10, 16, 26, 42, 68, 110], k = 0;
+          (function draw() {
+            var cols = steps[k], rows = Math.round(cols * H / W);
+            tmp.width = cols; tmp.height = rows;
+            tctx.drawImage(img, 0, 0, cols, rows);
+            ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, cv.width, cv.height);
+            ctx.drawImage(tmp, 0, 0, cols, rows, 0, 0, cv.width, cv.height);
+            if (k === 0) w.classList.add('in');
+            if (++k < steps.length) setTimeout(draw, 120);
+            else { cv.classList.add('done'); setTimeout(function () { cv.remove(); }, 500); }
+          })();
+        };
+        (img.decode ? img.decode() : Promise.resolve()).then(run, run);
+      }
+
+      /* Talee：タイプライター */
+      function type(w) {
+        var el = w.querySelector('.work-desc');
+        var tokens = [];
+        el.childNodes.forEach(function (n) {
+          if (n.nodeType === 3) Array.prototype.forEach.call(n.textContent, function (c) { tokens.push(c); });
+          else if (n.nodeName === 'BR') tokens.push('\n');
+        });
+        el.textContent = '';
+        el.classList.add('typing');
+        w.classList.add('in');
+        var i = 0;
+        setTimeout(function tick() {
+          var t = tokens[i++];
+          el.insertBefore(t === '\n' ? document.createElement('br') : document.createTextNode(t), caret);
+          if (i < tokens.length) setTimeout(tick, t === '、' || t === '。' ? 160 : 38);
+          else setTimeout(function () { el.classList.add('typed'); }, 1800);
+        }, 450);
+        var caret = document.createElement('span');
+        caret.className = 'caret';
+        el.appendChild(caret);
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          io.unobserve(e.target);
+          var w = e.target, kind = w.dataset.anim;
+          if (kind === 'pixel') pixel(w);
+          else if (kind === 'type') type(w);
+          else w.classList.add('in');
+        });
+      }, { threshold: 0.3 });
+      works.forEach(function (w) { io.observe(w); });
+
+      /* 3D傾き（マウスで操作できる端末だけ） */
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      document.querySelectorAll('.tilt').forEach(function (el) {
+        el.addEventListener('pointermove', function (e) {
+          var r = el.getBoundingClientRect();
+          var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+          el.style.setProperty('--ry', ((x - 0.5) * 10).toFixed(2) + 'deg');
+          el.style.setProperty('--rx', ((0.5 - y) * 8).toFixed(2) + 'deg');
+          el.style.setProperty('--gx', (x * 100).toFixed(1) + '%');
+          el.style.setProperty('--gy', (y * 100).toFixed(1) + '%');
+          el.classList.add('tilting');
+        });
+        el.addEventListener('pointerleave', function () {
+          el.classList.remove('tilting');
+          el.style.setProperty('--rx', '0deg');
+          el.style.setProperty('--ry', '0deg');
+        });
+      });
+    })();
+  </script>
 
   <script>
     /* ---- スライドショー（手動切り替えのみ） ---- */

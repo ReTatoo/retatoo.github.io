@@ -257,3 +257,59 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
   .hd1 { opacity: .45; } .hd2 { opacity: .85; }
   .hd, .ripple { animation: none; }
 }
+
+/* ===== Works：登場演出 ===== */
+.work.pre .work-body > * { opacity: 0; translate: 0 16px; }
+.work.in .work-body > * { opacity: 1; translate: 0 0; transition: opacity .6s var(--d, 0s) ease-out, translate .6s var(--d, 0s) ease-out; }
+
+/* Blonica：ドット */
+.work[data-anim="pixel"].pre .work-visual img { opacity: 0; }
+.work[data-anim="pixel"].in .work-visual img { opacity: 1; transition: opacity .1s .9s; }
+.pix { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; image-rendering: pixelated; transition: opacity .4s; pointer-events: none; }
+.pix.done { opacity: 0; }
+
+/* Boarmo：メモ紙ぺたっ＋画鋲 */
+.work[data-anim="paper"].pre .work-visual { opacity: 0; translate: 0 -40px; rotate: -4deg; scale: 1.06; }
+.work[data-anim="paper"].in .work-visual { animation: stick .7s cubic-bezier(.2,.9,.3,1.15) both; }
+@keyframes stick {
+  0%   { opacity: 0; translate: 0 -40px; rotate: -4deg; scale: 1.06; }
+  60%  { opacity: 1; translate: 0 4px;  rotate: .6deg; scale: .985; }
+  80%  { translate: 0 -2px; rotate: -.3deg; scale: 1.004; }
+  100% { opacity: 1; translate: 0 0;    rotate: 0deg; scale: 1; }
+}
+.pin {
+  position: absolute; top: 14px; left: 50%; z-index: 3; width: 22px; height: 22px; margin-left: -11px;
+  border-radius: 50%; background: var(--red);
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,.18), 3px 4px 0 rgba(23,23,25,.18);
+}
+.pin::after { content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.7); top: 5px; left: 5px; }
+.work[data-anim="paper"].pre .pin { opacity: 0; scale: 2.4; translate: 0 -24px; }
+.work[data-anim="paper"].in .pin { animation: pin .45s .6s cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes pin { from { opacity: 0; scale: 2.4; translate: 0 -24px; } to { opacity: 1; scale: 1; translate: 0 0; } }
+
+/* Talee：タイプライター */
+.work-desc.typing { min-height: 3.6em; }
+.caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.18em; background: var(--red); animation: blink .9s steps(1) infinite; }
+.work-desc.typed .caret { display: none; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ===== 3D傾き ===== */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .6s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
+.tilt.tilting { transition: transform .12s ease-out; }
+.tilt::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.22), transparent 55%);
+  opacity: 0; transition: opacity .3s;
+}
+.tilt.tilting::after { opacity: 1; }
+.slide-btn { z-index: 3; }
+.work-visual { border-radius: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt { transform: none !important; }
+  .tilt::after { display: none; }
+}

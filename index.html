@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261123d">
+  <link rel="stylesheet" href="style.css?v=20261123e">
 </head>
 <body class="intro">
   <header class="nav">
@@ -252,128 +252,110 @@
   </dialog>
 
   <script>
-    /* ---- 章タイトル：最初は中央に大きく → 次のシーンで上に移動して見出しバーに ---- */
+    /* ---- アクセス時・リロード時は、いつもページの一番上から ---- */
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    window.scrollTo(0, 0);
+    window.addEventListener('load', function () { window.scrollTo(0, 0); });
+
+    /* ---- スクロール量に合わせて進むアニメーション ---- */
     (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var navH = 64;
       var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
-      var navH = 64, ticking = false;
+      var scenes = Array.prototype.slice.call(document.querySelectorAll('.chapter .scene:not(.scene-title), .scene-contact'));
+      function clamp(v) { return Math.min(1, Math.max(0, v)); }
       function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+      /* Blonica：ドット絵の粗さをスクロール量で変える */
+      var pixWork = document.querySelector('.work[data-anim="pixel"]');
+      var pix = null;
+      if (pixWork) {
+        var pvis = pixWork.querySelector('.work-visual'), pimg = pvis.querySelector('img');
+        var cv = document.createElement('canvas'); cv.className = 'pix'; pvis.appendChild(cv);
+        var tmp = document.createElement('canvas');
+        pix = { steps: [5, 8, 12, 18, 28, 42, 64, 100], last: -1, ready: false,
+          draw: function (q) {
+            if (!this.ready) return;
+            var k = Math.min(this.steps.length - 1, Math.floor(q * this.steps.length));
+            pixWork.classList.toggle('sharp', q >= 1);
+            if (q >= 1 || k === this.last) return;
+            this.last = k;
+            var W = pvis.clientWidth, H = pvis.clientHeight, dpr = window.devicePixelRatio || 1;
+            if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+            var cols = this.steps[k], rows = Math.max(1, Math.round(cols * H / W));
+            tmp.width = cols; tmp.height = rows;
+            tmp.getContext('2d').drawImage(pimg, 0, 0, cols, rows);
+            var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, cv.width, cv.height);
+            ctx.drawImage(tmp, 0, 0, cols, rows, 0, 0, cv.width, cv.height);
+          } };
+        var onReady = function () { pix.ready = true; pix.last = -1; update(); };
+        if (pimg.complete && pimg.naturalWidth) onReady(); else pimg.addEventListener('load', onReady);
+      }
+
+      /* Talee：スクロールした分だけ文字が打たれる */
+      var typeEl = document.querySelector('.work[data-anim="type"] .work-desc');
+      var typer = null;
+      if (typeEl) {
+        var tokens = [];
+        typeEl.childNodes.forEach(function (n) {
+          if (n.nodeType === 3) Array.prototype.forEach.call(n.textContent, function (c) { tokens.push(c); });
+          else if (n.nodeName === 'BR') tokens.push('\n');
+        });
+        var full = typeEl.innerHTML;
+        var esc = function (c) { return c === '\n' ? '<br>' : c.replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+        typeEl.style.minHeight = typeEl.offsetHeight + 'px';
+        typer = { last: -1, set: function (q) {
+          var n = Math.round(q * tokens.length);
+          if (n === this.last) return;
+          this.last = n;
+          if (n >= tokens.length) { typeEl.innerHTML = full; typeEl.classList.add('typed'); return; }
+          typeEl.classList.remove('typed');
+          typeEl.innerHTML = tokens.slice(0, n).map(esc).join('') + '<span class="caret"></span>';
+        } };
+      }
+
       function update() {
-        ticking = false;
-        var vh = window.innerHeight;
+        var vh = window.innerHeight, vw = window.innerWidth;
+
+        /* 章タイトル：中央に大きく → 上へ移動して見出しバーに */
         chapters.forEach(function (ch) {
           var bar = ch.querySelector('.chapter-bar');
           var title = ch.querySelector('.chapter-title');
           var barH = bar.offsetHeight;
           var r = ch.getBoundingClientRect();
-          var p = Math.min(1, Math.max(0, -r.top / (vh - barH)));
-          var e = ease(p);
+          var e = ease(clamp(-r.top / (vh - barH)));
           var wrap = title.parentElement, cs = getComputedStyle(wrap);
           var cw = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
           var w = title.offsetWidth;
-          var s0 = Math.min(window.innerWidth < 760 ? 1.5 : 2.4, (cw * 0.96) / w);
+          var s0 = Math.min(1, (cw * 0.96) / w);
+          var s1 = vw < 760 ? 0.42 : 0.4;
           var cx = (cw - w * s0) / 2;
           var cy = (vh - navH - barH) / 2;
-          var sc = s0 + (1 - s0) * e;
-          title.style.transform = 'translate(' + (cx * (1 - e)).toFixed(1) + 'px,' + (cy * (1 - e)).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+          var sc = s0 + (s1 - s0) * e;
+          title.style.transform = 'translate(' + (cx * (1 - e)).toFixed(1) + 'px,' + (cy * (1 - e)).toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
           bar.style.setProperty('--bg-o', e.toFixed(3));
         });
+
+        /* 各シーン：画面に入った割合 --p（0〜1） */
+        scenes.forEach(function (sc) {
+          var r = sc.getBoundingClientRect();
+          var p = reduce ? 1 : clamp((vh - r.top) / (vh * 0.8));
+          sc.style.setProperty('--p', p.toFixed(3));
+          if (pix && sc.contains(pixWork)) pix.draw(reduce ? 1 : clamp((p - 0.05) / 0.6));
+          if (typer && sc.contains(typeEl)) typer.set(reduce ? 1 : clamp((p - 0.25) / 0.6));
+        });
       }
-      function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+      var ticking = false;
+      function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; update(); }); } }
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
       update();
 
-      /* STEP・About・Contact：シーンに入ったら順番に表示 */
-      var targets = document.querySelectorAll('.scene-steps, .scene-about, .scene-contact');
-      if (!('IntersectionObserver' in window)) { targets.forEach(function (t) { t.classList.add('in'); }); return; }
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-      }, { threshold: 0.45 });
-      targets.forEach(function (t) { io.observe(t); });
-    })();
-  </script>
-
-  <script>
-    /* ---- Works：作品ごとの登場演出 ＋ 3D傾き ---- */
-    (function () {
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var works = document.querySelectorAll('.work[data-anim]');
-      if (reduce || !('IntersectionObserver' in window)) return;
-
-      /* 共通：本文を順番にふわっと */
-      works.forEach(function (w) {
-        w.classList.add('pre');
-        Array.prototype.forEach.call(w.querySelector('.work-body').children, function (el, i) {
-          el.style.setProperty('--d', (0.35 + i * 0.08) + 's');
-        });
-      });
-
-      /* Blonica：ドットが集まって絵になる */
-      function pixel(w) {
-        var vis = w.querySelector('.work-visual');
-        var img = vis.querySelector('img');
-        var cv = document.createElement('canvas');
-        cv.className = 'pix';
-        vis.appendChild(cv);
-        var run = function () {
-          var W = vis.clientWidth, H = vis.clientHeight, dpr = window.devicePixelRatio || 1;
-          cv.width = W * dpr; cv.height = H * dpr;
-          var ctx = cv.getContext('2d');
-          var tmp = document.createElement('canvas'), tctx = tmp.getContext('2d');
-          var steps = [6, 10, 16, 26, 42, 68, 110], k = 0;
-          (function draw() {
-            var cols = steps[k], rows = Math.round(cols * H / W);
-            tmp.width = cols; tmp.height = rows;
-            tctx.drawImage(img, 0, 0, cols, rows);
-            ctx.imageSmoothingEnabled = false;
-            ctx.clearRect(0, 0, cv.width, cv.height);
-            ctx.drawImage(tmp, 0, 0, cols, rows, 0, 0, cv.width, cv.height);
-            if (k === 0) w.classList.add('in');
-            if (++k < steps.length) setTimeout(draw, 120);
-            else { cv.classList.add('done'); setTimeout(function () { cv.remove(); }, 500); }
-          })();
-        };
-        (img.decode ? img.decode() : Promise.resolve()).then(run, run);
-      }
-
-      /* Talee：タイプライター */
-      function type(w) {
-        var el = w.querySelector('.work-desc');
-        var tokens = [];
-        el.childNodes.forEach(function (n) {
-          if (n.nodeType === 3) Array.prototype.forEach.call(n.textContent, function (c) { tokens.push(c); });
-          else if (n.nodeName === 'BR') tokens.push('\n');
-        });
-        el.textContent = '';
-        el.classList.add('typing');
-        w.classList.add('in');
-        var i = 0;
-        setTimeout(function tick() {
-          var t = tokens[i++];
-          el.insertBefore(t === '\n' ? document.createElement('br') : document.createTextNode(t), caret);
-          if (i < tokens.length) setTimeout(tick, t === '、' || t === '。' ? 160 : 38);
-          else setTimeout(function () { el.classList.add('typed'); }, 1800);
-        }, 450);
-        var caret = document.createElement('span');
-        caret.className = 'caret';
-        el.appendChild(caret);
-      }
-
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          io.unobserve(e.target);
-          var w = e.target, kind = w.dataset.anim;
-          if (kind === 'pixel') pixel(w);
-          else if (kind === 'type') type(w);
-          else w.classList.add('in');
-        });
-      }, { threshold: 0.3 });
-      works.forEach(function (w) { io.observe(w); });
-
       /* 3D傾き（マウスで操作できる端末だけ） */
-      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      if (reduce || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
       document.querySelectorAll('.tilt').forEach(function (el) {
         el.addEventListener('pointermove', function (e) {
           var r = el.getBoundingClientRect();

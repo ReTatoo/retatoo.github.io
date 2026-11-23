@@ -260,39 +260,37 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
   .hd, .ripple { animation: none; }
 }
 
-/* ===== Works：登場演出 ===== */
-.work.pre .work-body > * { opacity: 0; translate: 0 16px; }
-.work.in .work-body > * { opacity: 1; translate: 0 0; transition: opacity .6s var(--d, 0s) ease-out, translate .6s var(--d, 0s) ease-out; }
+/* ===== Works：作品ごとの演出（スクロール量に合わせて進む） =====
+   JS が各シーンに --p（0〜1：シーンがどれだけ画面に入ったか）を入れます */
 
-/* Blonica：ドット */
-.work[data-anim="pixel"].pre .work-visual img { opacity: 0; }
-.work[data-anim="pixel"].in .work-visual img { opacity: 1; transition: opacity .1s .9s; }
-.pix { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; image-rendering: pixelated; transition: opacity .4s; pointer-events: none; }
-.pix.done { opacity: 0; }
+/* Blonica：ドット → くっきり */
+.work[data-anim="pixel"] .work-visual img { opacity: 0; }
+.work[data-anim="pixel"].sharp .work-visual img { opacity: 1; }
+.pix { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; image-rendering: pixelated; pointer-events: none; }
+.work[data-anim="pixel"].sharp .pix { opacity: 0; }
 
 /* Boarmo：メモ紙ぺたっ＋画鋲 */
-.work[data-anim="paper"].pre .work-visual { opacity: 0; translate: 0 -40px; rotate: -4deg; scale: 1.06; }
-.work[data-anim="paper"].in .work-visual { animation: stick .7s cubic-bezier(.2,.9,.3,1.15) both; }
-@keyframes stick {
-  0%   { opacity: 0; translate: 0 -40px; rotate: -4deg; scale: 1.06; }
-  60%  { opacity: 1; translate: 0 4px;  rotate: .6deg; scale: .985; }
-  80%  { translate: 0 -2px; rotate: -.3deg; scale: 1.004; }
-  100% { opacity: 1; translate: 0 0;    rotate: 0deg; scale: 1; }
+.work[data-anim="paper"] .work-visual {
+  --v: clamp(0, calc(var(--p, 1) * 1.8), 1);
+  opacity: var(--v);
+  translate: 0 calc((1 - var(--v)) * -48px);
+  rotate: calc((1 - var(--v)) * -5deg);
+  scale: calc(1 + (1 - var(--v)) * .06);
 }
 .pin {
   position: absolute; top: 14px; left: 50%; z-index: 3; width: 22px; height: 22px; margin-left: -11px;
   border-radius: 50%; background: var(--red);
   box-shadow: inset -3px -3px 0 rgba(0,0,0,.18), 3px 4px 0 rgba(23,23,25,.18);
+  --w: clamp(0, calc((var(--p, 1) - .55) * 4), 1);
+  opacity: var(--w);
+  scale: calc(1 + (1 - var(--w)) * 1.4);
+  translate: 0 calc((1 - var(--w)) * -24px);
 }
 .pin::after { content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.7); top: 5px; left: 5px; }
-.work[data-anim="paper"].pre .pin { opacity: 0; scale: 2.4; translate: 0 -24px; }
-.work[data-anim="paper"].in .pin { animation: pin .45s .6s cubic-bezier(.3,1.6,.5,1) both; }
-@keyframes pin { from { opacity: 0; scale: 2.4; translate: 0 -24px; } to { opacity: 1; scale: 1; translate: 0 0; } }
 
-/* Talee：タイプライター */
-.work-desc.typing { min-height: 3.6em; }
+/* Talee：タイプライター（スクロールした分だけ文字が打たれる） */
 .caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.18em; background: var(--red); animation: blink .9s steps(1) infinite; }
-.work-desc.typed .caret { display: none; }
+.typed .caret { display: none; }
 @keyframes blink { 50% { opacity: 0; } }
 
 /* ===== 3D傾き ===== */
@@ -317,15 +315,11 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 }
 
 /* =====================================================
-   シーン構成：1スクロール＝1シーン
+   シーン構成（自動で進む動きはなし。スクロールに合わせて表示）
    ===================================================== */
-@media (min-width: 900px) and (min-height: 600px) {
-  html { scroll-snap-type: y mandatory; }
-}
 .scene {
   min-height: 100vh; min-height: 100svh;
   display: flex; flex-direction: column; justify-content: center;
-  scroll-snap-align: start; scroll-snap-stop: always;
 }
 .scene-inner { width: 100%; }
 
@@ -334,8 +328,9 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .scene-hero .hero { flex: 1; display: flex; align-items: center; }
 .scene-hero .hero-inner { width: 100%; padding-top: 24px; padding-bottom: 24px; }
 
-/* 章（Works / How I make / About） */
-.chapter { position: relative; scroll-snap-align: start; }
+/* 章（Works / How I make / About）
+   タイトルは大きな文字で用意して、縮小して見出しバーにする（拡大しないので文字がにじまない） */
+.chapter { position: relative; }
 .chapter-bar {
   position: sticky; top: var(--nav); z-index: 5; height: var(--bar);
   display: flex; align-items: center;
@@ -344,14 +339,52 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 }
 .chapter-bar .wrap { width: 100%; }
 .chapter-title {
-  display: inline-flex; align-items: baseline; gap: 6px 16px; flex-wrap: wrap;
-  transform-origin: left center; will-change: transform;
+  display: inline-flex; align-items: baseline; gap: 0 .45em; white-space: nowrap;
+  transform-origin: left center; font-size: 5rem; line-height: 1.1;
 }
-.chapter-title h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); }
-.chapter-title p { color: var(--muted); font-size: .9rem; }
-.chapter-title .num { font-size: .95rem; }
-.scene-title { min-height: calc(100vh - var(--bar)); min-height: calc(100svh - var(--bar)); scroll-snap-align: none; }
+.chapter-title h2 { font-size: 1em; line-height: 1.1; }
+.chapter-title .num { font-size: .44em; letter-spacing: .08em; }
+.chapter-title p { color: var(--muted); font-size: .4em; }
+.scene-title { min-height: calc(100vh - var(--bar)); min-height: calc(100svh - var(--bar)); }
 .chapter .scene:not(.scene-title) { padding: calc(var(--nav) + var(--bar) + 16px) 0 32px; }
+
+/* スクロールに合わせて順番に出てくる部品
+   --s：出はじめるタイミング（0〜1）。大きいほど後から出る */
+.scene-work .work-body > *, .scene-work .work:not([data-anim="paper"]) .work-visual,
+.scene-work .slider-bar,
+.scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
+.scene-contact .scene-inner > * {
+  --q: clamp(0, calc((var(--p, 1) - var(--s, 0)) * 3.2), 1);
+  opacity: var(--q);
+  translate: 0 calc((1 - var(--q)) * 30px);
+}
+.scene-work .work-visual { --s: 0; }
+.scene-work .work-body > *:nth-child(1) { --s: .12; }
+.scene-work .work-body > *:nth-child(2) { --s: .16; }
+.scene-work .work-body > *:nth-child(3) { --s: .2; }
+.scene-work .work-body > *:nth-child(4) { --s: .24; }
+.scene-work .work-body > *:nth-child(5) { --s: .28; }
+.scene-work .work-body > *:nth-child(6) { --s: .32; }
+.scene-work .work-body > *:nth-child(7) { --s: .36; }
+.scene-work .work-body > *:nth-child(8) { --s: .4; }
+.scene-work .work-body > *:nth-child(9) { --s: .44; }
+.scene-work .slider-bar { --s: .2; }
+
+.scene-steps .step:nth-child(1) { --s: 0; }
+.scene-steps .step:nth-child(2) { --s: .22; }
+.scene-steps .step:nth-child(3) { --s: .44; }
+.scene-steps .step-dot { scale: var(--q); }
+.scene-steps .d1 { opacity: .45; }
+.scene-steps .step { padding: 32px 28px 34px; }
+.scene-steps .step h3 { font-size: 1.5rem; }
+.scene-about .profile { --s: 0; }
+.scene-about .about-body > *:nth-child(1) { --s: .15; }
+.scene-about .about-body > *:nth-child(2) { --s: .25; }
+.scene-about .about-body > *:nth-child(3) { --s: .35; }
+.scene-contact .scene-inner > *:nth-child(1) { --s: 0; }
+.scene-contact .scene-inner > *:nth-child(2) { --s: .08; }
+.scene-contact .scene-inner > *:nth-child(3) { --s: .16; }
+.scene-contact .scene-inner > *:nth-child(4) { --s: .24; }
 
 /* 作品シーン：1画面に収まるようにコンパクトに */
 .scene-work .work { margin-bottom: 0; gap: clamp(24px, 4vw, 56px); }
@@ -362,29 +395,6 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .scene-work .proof { margin-bottom: 12px; font-size: .86rem; }
 .scene-work .dl { margin-top: 14px; }
 .scene-work .note { margin-top: 8px; }
-
-/* STEP：順番に出てくる */
-.scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
-.scene-contact .scene-inner > * { opacity: 0; translate: 0 28px; }
-.scene.in .step, .scene.in .profile, .scene.in .about-body > *, .scene.in .scene-inner > * {
-  opacity: 1; translate: 0 0;
-  transition: opacity .7s var(--d, 0s) ease-out, translate .7s var(--d, 0s) cubic-bezier(.2,.8,.2,1);
-}
-.scene-steps .step:nth-child(1) { --d: .1s; }
-.scene-steps .step:nth-child(2) { --d: .45s; }
-.scene-steps .step:nth-child(3) { --d: .8s; }
-.scene-steps .step-dot { scale: 0; }
-.scene-steps.in .step-dot { animation: dotPop .55s calc(var(--d) + .3s) cubic-bezier(.3,1.6,.5,1) both; }
-@keyframes dotPop { from { scale: 0; } to { scale: 1; } }
-.scene-steps .step { padding: 32px 28px 34px; }
-.scene-steps .step h3 { font-size: 1.5rem; }
-.scene-about .profile { --d: .1s; }
-.scene-about .about-body > *:nth-child(1) { --d: .3s; }
-.scene-about .about-body > *:nth-child(2) { --d: .45s; }
-.scene-about .about-body > *:nth-child(3) { --d: .6s; }
-.scene-contact .scene-inner > *:nth-child(2) { --d: .12s; }
-.scene-contact .scene-inner > *:nth-child(3) { --d: .24s; }
-.scene-contact .scene-inner > *:nth-child(4) { --d: .36s; }
 
 /* Contact（最後のシーン） */
 .scene-contact { padding-top: var(--nav); }
@@ -404,9 +414,6 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 }
 @media (max-width: 760px) {
   :root { --bar: 64px; }
+  .chapter-title { font-size: 3.2rem; }
   .chapter .scene:not(.scene-title) { padding-bottom: 48px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
-  .scene-contact .scene-inner > *, .scene-steps .step-dot { opacity: 1 !important; translate: none !important; scale: 1 !important; }
 }

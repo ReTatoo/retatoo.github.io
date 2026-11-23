@@ -109,8 +109,8 @@
               <figure class="slide"><img src="assets/works/talee-2.webp" alt="本文中のキャラ名「カイ」にマウスを乗せ、設定メモがポップアップしている" width="1600" height="1200" loading="lazy"></figure>
               <figure class="slide"><img src="assets/works/talee-3.webp" alt="伏線「青い封筒の差出人」の張った箇所と回収した箇所が右パネルに並んでいる" width="1600" height="1200" loading="lazy"></figure>
             </div>
-            <button class="slide-btn prev" type="button" aria-label="前の画像">‹</button>
-            <button class="slide-btn next" type="button" aria-label="次の画像">›</button>
+            <button class="slide-btn prev" type="button" aria-label="前の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8"/></svg></button>
+            <button class="slide-btn next" type="button" aria-label="次の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg></button>
           </div>
           <div class="slider-bar">
             <p class="slide-cap" aria-live="polite"></p>
@@ -217,25 +217,35 @@
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <dialog id="lightbox" class="lightbox" aria-label="拡大画像">
+    <div class="lb-stage">
+      <img src="" alt="">
+    </div>
+    <button class="lb-close" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button>
+    <button class="lb-prev slide-btn" type="button" aria-label="前の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 7 12l8 8"/></svg></button>
+    <button class="lb-next slide-btn" type="button" aria-label="次の画像"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg></button>
+    <p class="lb-cap"></p>
+  </dialog>
+
   <script>
+    /* ---- スライドショー（手動切り替えのみ） ---- */
     document.querySelectorAll('[data-slider]').forEach(function (root) {
       var track = root.querySelector('.slides');
       var slides = root.querySelectorAll('.slide');
       var caps = Array.prototype.map.call(root.querySelector('.caps').content.querySelectorAll('span'), function (s) { return s.textContent; });
       var cap = root.querySelector('.slide-cap');
       var dotsBox = root.querySelector('.dots');
-      var current = 0, timer = null;
+      var current = 0;
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       var dots = Array.prototype.map.call(slides, function (_, i) {
         var b = document.createElement('button');
         b.type = 'button'; b.className = 'dot'; b.setAttribute('role', 'tab');
         b.setAttribute('aria-label', (i + 1) + '枚目');
-        b.addEventListener('click', function () { go(i); restart(); });
+        b.addEventListener('click', function () { go(i); });
         dotsBox.appendChild(b);
         return b;
       });
-
       function render(i) {
         current = i;
         dots.forEach(function (d, k) { d.setAttribute('aria-selected', k === i); });
@@ -246,28 +256,54 @@
         track.scrollTo({ left: track.clientWidth * i, behavior: reduce ? 'auto' : 'smooth' });
         render(i);
       }
-      root.querySelector('.prev').addEventListener('click', function () { go(current - 1); restart(); });
-      root.querySelector('.next').addEventListener('click', function () { go(current + 1); restart(); });
+      root.querySelector('.prev').addEventListener('click', function () { go(current - 1); });
+      root.querySelector('.next').addEventListener('click', function () { go(current + 1); });
       track.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight') { go(current + 1); restart(); }
-        if (e.key === 'ArrowLeft') { go(current - 1); restart(); }
+        if (e.key === 'ArrowRight') go(current + 1);
+        if (e.key === 'ArrowLeft') go(current - 1);
       });
       var t;
       track.addEventListener('scroll', function () {
         clearTimeout(t);
         t = setTimeout(function () { render(Math.round(track.scrollLeft / track.clientWidth)); }, 80);
       });
-
-      function start() { if (!reduce) timer = setInterval(function () { go(current + 1); }, 5000); }
-      function stop() { clearInterval(timer); timer = null; }
-      function restart() { stop(); start(); }
-      root.addEventListener('mouseenter', stop);
-      root.addEventListener('mouseleave', start);
-      root.addEventListener('focusin', stop);
-      root.addEventListener('focusout', start);
-
-      render(0); start();
+      render(0);
     });
+
+    /* ---- 画像の拡大表示 ---- */
+    (function () {
+      var box = document.getElementById('lightbox');
+      var img = box.querySelector('img');
+      var cap = box.querySelector('.lb-cap');
+      var prev = box.querySelector('.lb-prev');
+      var next = box.querySelector('.lb-next');
+      var group = [], index = 0;
+
+      function show(i) {
+        index = (i + group.length) % group.length;
+        img.src = group[index].currentSrc || group[index].src;
+        img.alt = group[index].alt;
+        cap.textContent = group.length > 1 ? (index + 1) + ' / ' + group.length : '';
+      }
+      document.querySelectorAll('.work-visual img').forEach(function (el) {
+        el.addEventListener('click', function () {
+          group = Array.prototype.slice.call(el.closest('.work-visual').querySelectorAll('img'));
+          box.classList.toggle('single', group.length < 2);
+          show(group.indexOf(el));
+          box.showModal();
+        });
+      });
+      prev.addEventListener('click', function () { show(index - 1); });
+      next.addEventListener('click', function () { show(index + 1); });
+      box.querySelector('.lb-close').addEventListener('click', function () { box.close(); });
+      box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('lb-stage')) box.close(); });
+      box.addEventListener('keydown', function (e) {
+        if (group.length < 2) return;
+        if (e.key === 'ArrowRight') show(index + 1);
+        if (e.key === 'ArrowLeft') show(index - 1);
+      });
+    })();
   </script>
+
 </body>
 </html>

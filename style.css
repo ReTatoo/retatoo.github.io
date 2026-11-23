@@ -260,8 +260,9 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
   .hd, .ripple { animation: none; }
 }
 
-/* ===== Works：作品ごとの演出（スクロール量に合わせて進む） =====
-   JS が各シーンに --p（0〜1：シーンがどれだけ画面に入ったか）を入れます */
+/* ===== Works：作品ごとの演出 =====
+   作品（やSTEPなど）の中心が画面の真ん中に来たら、JS が .on を付けて演出スタート。
+   画面の下に戻ると .on が外れて、次に来たときもう一度再生されます */
 
 /* Blonica：ドット → くっきり */
 .work[data-anim="pixel"] .work-visual img { opacity: 0; }
@@ -270,25 +271,24 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .work[data-anim="pixel"].sharp .pix { opacity: 0; }
 
 /* Boarmo：メモ紙ぺたっ＋画鋲 */
-.work[data-anim="paper"] .work-visual {
-  --v: clamp(0, calc(var(--p, 1) * 1.25), 1);
-  opacity: var(--v);
-  translate: 0 calc((1 - var(--v)) * -48px);
-  rotate: calc((1 - var(--v)) * -5deg);
-  scale: calc(1 + (1 - var(--v)) * .06);
+.work[data-anim="paper"] .work-visual { opacity: 0; }
+.on .work[data-anim="paper"] .work-visual { animation: stick .8s cubic-bezier(.2,.9,.3,1.15) both; }
+@keyframes stick {
+  0%   { opacity: 0; translate: 0 -48px; rotate: -5deg; scale: 1.06; }
+  60%  { opacity: 1; translate: 0 4px;  rotate: .6deg; scale: .985; }
+  80%  { translate: 0 -2px; rotate: -.3deg; scale: 1.004; }
+  100% { opacity: 1; translate: 0 0;    rotate: 0deg; scale: 1; }
 }
 .pin {
   position: absolute; top: 14px; left: 50%; z-index: 3; width: 22px; height: 22px; margin-left: -11px;
-  border-radius: 50%; background: var(--red);
+  border-radius: 50%; background: var(--red); opacity: 0;
   box-shadow: inset -3px -3px 0 rgba(0,0,0,.18), 3px 4px 0 rgba(23,23,25,.18);
-  --w: clamp(0, calc((var(--p, 1) - .8) * 6), 1);
-  opacity: var(--w);
-  scale: calc(1 + (1 - var(--w)) * 1.4);
-  translate: 0 calc((1 - var(--w)) * -24px);
 }
 .pin::after { content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.7); top: 5px; left: 5px; }
+.on .pin { animation: pin .45s .75s cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes pin { from { opacity: 0; scale: 2.4; translate: 0 -24px; } to { opacity: 1; scale: 1; translate: 0 0; } }
 
-/* Talee：タイプライター（スクロールした分だけ文字が打たれる） */
+/* Talee：タイプライター */
 .caret { display: inline-block; width: 2px; height: 1.1em; margin-left: 2px; vertical-align: -0.18em; background: var(--red); animation: blink .9s steps(1) infinite; }
 .typed .caret { display: none; }
 @keyframes blink { 50% { opacity: 0; } }
@@ -348,43 +348,50 @@ h2 { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.15;
 .scene-title { min-height: calc(100vh - var(--bar)); min-height: calc(100svh - var(--bar)); }
 .chapter .scene:not(.scene-title) { padding: calc(var(--nav) + var(--bar) + 16px) 0 32px; }
 
-/* スクロールに合わせて順番に出てくる部品
-   --s：出はじめるタイミング（0〜1）。大きいほど後から出る */
+/* 順番に出てくる部品（--d：出はじめるまでの待ち時間） */
 .scene-work .work-body > *, .scene-work .work:not([data-anim="paper"]) .work-visual,
 .scene-work .slider-bar,
 .scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
-.scene-contact .scene-inner > * {
-  --q: clamp(0, calc((var(--p, 1) - var(--s, 0)) * 2.4), 1);
-  opacity: var(--q);
-  translate: 0 calc((1 - var(--q)) * 30px);
+.scene-contact .scene-inner > * { opacity: 0; translate: 0 30px; }
+.on .work-body > *, .on .work:not([data-anim="paper"]) .work-visual, .on .slider-bar,
+.on .step, .on .profile, .on .about-body > *, .scene-contact.on .scene-inner > * {
+  opacity: 1; translate: 0 0;
+  transition: opacity .7s var(--d, 0s) ease-out, translate .7s var(--d, 0s) cubic-bezier(.2,.8,.2,1);
 }
-.scene-work .work-visual { --s: 0; }
-.scene-work .work-body > *:nth-child(1) { --s: .12; }
-.scene-work .work-body > *:nth-child(2) { --s: .16; }
-.scene-work .work-body > *:nth-child(3) { --s: .2; }
-.scene-work .work-body > *:nth-child(4) { --s: .24; }
-.scene-work .work-body > *:nth-child(5) { --s: .28; }
-.scene-work .work-body > *:nth-child(6) { --s: .32; }
-.scene-work .work-body > *:nth-child(7) { --s: .36; }
-.scene-work .work-body > *:nth-child(8) { --s: .4; }
-.scene-work .work-body > *:nth-child(9) { --s: .44; }
-.scene-work .slider-bar { --s: .2; }
+.scene-work .work-body > *:nth-child(1) { --d: .15s; }
+.scene-work .work-body > *:nth-child(2) { --d: .22s; }
+.scene-work .work-body > *:nth-child(3) { --d: .29s; }
+.scene-work .work-body > *:nth-child(4) { --d: .36s; }
+.scene-work .work-body > *:nth-child(5) { --d: .43s; }
+.scene-work .work-body > *:nth-child(6) { --d: .5s; }
+.scene-work .work-body > *:nth-child(7) { --d: .57s; }
+.scene-work .work-body > *:nth-child(8) { --d: .64s; }
+.scene-work .work-body > *:nth-child(9) { --d: .71s; }
+.scene-work .slider-bar { --d: .3s; }
 
-.scene-steps .step:nth-child(1) { --s: 0; }
-.scene-steps .step:nth-child(2) { --s: .22; }
-.scene-steps .step:nth-child(3) { --s: .44; }
-.scene-steps .step-dot { scale: var(--q); }
+.scene-steps .step:nth-child(1) { --d: 0s; }
+.scene-steps .step:nth-child(2) { --d: .35s; }
+.scene-steps .step:nth-child(3) { --d: .7s; }
+.scene-steps .step-dot { scale: 0; }
+.scene-steps.on .step-dot { animation: dotPop .55s calc(var(--d) + .3s) cubic-bezier(.3,1.6,.5,1) both; }
+@keyframes dotPop { from { scale: 0; } to { scale: 1; } }
 .scene-steps .d1 { opacity: .45; }
 .scene-steps .step { padding: 32px 28px 34px; }
 .scene-steps .step h3 { font-size: 1.5rem; }
-.scene-about .profile { --s: 0; }
-.scene-about .about-body > *:nth-child(1) { --s: .15; }
-.scene-about .about-body > *:nth-child(2) { --s: .25; }
-.scene-about .about-body > *:nth-child(3) { --s: .35; }
-.scene-contact .scene-inner > *:nth-child(1) { --s: 0; }
-.scene-contact .scene-inner > *:nth-child(2) { --s: .08; }
-.scene-contact .scene-inner > *:nth-child(3) { --s: .16; }
-.scene-contact .scene-inner > *:nth-child(4) { --s: .24; }
+.scene-about .profile { --d: 0s; }
+.scene-about .about-body > *:nth-child(1) { --d: .2s; }
+.scene-about .about-body > *:nth-child(2) { --d: .35s; }
+.scene-about .about-body > *:nth-child(3) { --d: .5s; }
+.scene-contact .scene-inner > *:nth-child(2) { --d: .1s; }
+.scene-contact .scene-inner > *:nth-child(3) { --d: .2s; }
+.scene-contact .scene-inner > *:nth-child(4) { --d: .3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-work .work-body > *, .scene-work .work-visual, .scene-work .slider-bar,
+  .scene-steps .step, .scene-about .profile, .scene-about .about-body > *,
+  .scene-contact .scene-inner > *, .pin { opacity: 1 !important; translate: none !important; animation: none !important; }
+  .scene-steps .step-dot { scale: 1 !important; animation: none !important; }
+}
 
 /* 作品シーン：1画面に収まるようにコンパクトに */
 .scene-work .work { margin-bottom: 0; gap: clamp(24px, 4vw, 56px); }

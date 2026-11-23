@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261123f">
+  <link rel="stylesheet" href="style.css?v=20261123g">
 </head>
 <body class="intro">
   <header class="nav">
@@ -263,38 +263,44 @@
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var navH = 64;
       var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
-      var scenes = Array.prototype.slice.call(document.querySelectorAll('.chapter .scene:not(.scene-title), .scene-contact'));
       function clamp(v) { return Math.min(1, Math.max(0, v)); }
       function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
-      /* Blonica：ドット絵の粗さをスクロール量で変える */
+      /* Blonica：ドット → くっきり（.on のときに再生） */
       var pixWork = document.querySelector('.work[data-anim="pixel"]');
       var pix = null;
       if (pixWork) {
         var pvis = pixWork.querySelector('.work-visual'), pimg = pvis.querySelector('img');
         var cv = document.createElement('canvas'); cv.className = 'pix'; pvis.appendChild(cv);
         var tmp = document.createElement('canvas');
-        pix = { steps: [5, 8, 12, 18, 28, 42, 64, 100], last: -1, ready: false,
-          draw: function (q) {
+        pix = { steps: [5, 8, 12, 18, 28, 42, 64, 100], ready: false, timer: null,
+          draw: function (k) {
             if (!this.ready) return;
-            var k = Math.min(this.steps.length - 1, Math.floor(q * this.steps.length));
-            pixWork.classList.toggle('sharp', q >= 1);
-            if (q >= 1 || k === this.last) return;
-            this.last = k;
             var W = pvis.clientWidth, H = pvis.clientHeight, dpr = window.devicePixelRatio || 1;
-            if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+            cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
             var cols = this.steps[k], rows = Math.max(1, Math.round(cols * H / W));
             tmp.width = cols; tmp.height = rows;
             tmp.getContext('2d').drawImage(pimg, 0, 0, cols, rows);
             var ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
-            ctx.clearRect(0, 0, cv.width, cv.height);
             ctx.drawImage(tmp, 0, 0, cols, rows, 0, 0, cv.width, cv.height);
-          } };
-        var onReady = function () { pix.ready = true; pix.last = -1; update(); };
+          },
+          play: function () {
+            var self = this, k = 0;
+            clearTimeout(this.timer);
+            (function next() {
+              if (!self.ready) { self.timer = setTimeout(next, 100); return; }
+              if (k >= self.steps.length) { pixWork.classList.add('sharp'); return; }
+              self.draw(k++);
+              self.timer = setTimeout(next, 130);
+            })();
+          },
+          reset: function () { clearTimeout(this.timer); pixWork.classList.remove('sharp'); this.draw(0); } };
+        var onReady = function () { pix.ready = true; if (!pixWork.classList.contains('sharp')) pix.draw(0); };
+        pimg.loading = 'eager';
         if (pimg.complete && pimg.naturalWidth) onReady(); else pimg.addEventListener('load', onReady);
       }
 
-      /* Talee：スクロールした分だけ文字が打たれる */
+      /* Talee：タイプライター（.on のときに再生） */
       var typeEl = document.querySelector('.work[data-anim="type"] .work-desc');
       var typer = null;
       if (typeEl) {
@@ -306,20 +312,45 @@
         var full = typeEl.innerHTML;
         var esc = function (c) { return c === '\n' ? '<br>' : c.replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
         typeEl.style.minHeight = typeEl.offsetHeight + 'px';
-        typer = { last: -1, set: function (q) {
-          var n = Math.round(q * tokens.length);
-          if (n === this.last) return;
-          this.last = n;
-          if (n >= tokens.length) { typeEl.innerHTML = full; typeEl.classList.add('typed'); return; }
-          typeEl.classList.remove('typed');
-          typeEl.innerHTML = tokens.slice(0, n).map(esc).join('') + '<span class="caret"></span>';
-        } };
+        typer = { timer: null,
+          show: function (n) {
+            if (n >= tokens.length) { typeEl.innerHTML = full; typeEl.classList.add('typed'); return; }
+            typeEl.classList.remove('typed');
+            typeEl.innerHTML = tokens.slice(0, n).map(esc).join('') + '<span class="caret"></span>';
+          },
+          play: function () {
+            var self = this, n = 0;
+            clearTimeout(this.timer);
+            (function next() {
+              self.show(n);
+              if (n >= tokens.length) return;
+              var c = tokens[n++];
+              self.timer = setTimeout(next, c === '、' || c === '。' ? 170 : 42);
+            })();
+          },
+          reset: function () { clearTimeout(this.timer); this.show(0); } };
+        if (!reduce) typer.reset();
       }
+
+      /* 演出の対象：中心が画面の真ん中に来たら .on */
+      var units = Array.prototype.slice.call(document.querySelectorAll('.scene-work, .scene-steps, .scene-about, .scene-contact'));
+      function target(u) { return u.querySelector('.work, .steps, .about') || u.querySelector('.scene-inner'); }
+      function start(u) {
+        u.classList.add('on');
+        if (pix && u.contains(pixWork)) pix.play();
+        if (typer && u.contains(typeEl)) typer.play();
+      }
+      function stop(u) {
+        u.classList.remove('on');
+        if (pix && u.contains(pixWork)) pix.reset();
+        if (typer && u.contains(typeEl)) typer.reset();
+      }
+      if (reduce) units.forEach(function (u) { u.classList.add('on'); if (pix && u.contains(pixWork)) pixWork.classList.add('sharp'); });
 
       function update() {
         var vh = window.innerHeight, vw = window.innerWidth;
 
-        /* 章タイトル：中央に大きく → 上へ移動して見出しバーに */
+        /* 章タイトル：中央に大きく → 上へ移動して見出しバーに（スクロール量に合わせて） */
         chapters.forEach(function (ch) {
           var bar = ch.querySelector('.chapter-bar');
           var title = ch.querySelector('.chapter-title');
@@ -338,14 +369,16 @@
           bar.style.setProperty('--bg-o', e.toFixed(3));
         });
 
-        /* 各シーン：画面に入った割合 --p（0〜1） */
-        scenes.forEach(function (sc) {
-          var r = sc.getBoundingClientRect();
-          /* シーンの上端が画面の 80% の位置 → 0、画面の上端付近 → 1 */
-          var p = reduce ? 1 : clamp((vh * 0.8 - r.top) / (vh * 0.75));
-          sc.style.setProperty('--p', p.toFixed(3));
-          if (pix && sc.contains(pixWork)) pix.draw(reduce ? 1 : clamp(p / 0.9));
-          if (typer && sc.contains(typeEl)) typer.set(reduce ? 1 : clamp((p - 0.2) / 0.75));
+        if (reduce) return;
+        /* 見えている範囲（上の帯の下〜画面の下）の真ん中 */
+        var mid = (navH + 76 + vh) / 2;
+        var atBottom = window.scrollY + vh >= document.documentElement.scrollHeight - 2;
+        units.forEach(function (u) {
+          var r = target(u).getBoundingClientRect();
+          var center = (r.top + r.bottom) / 2;
+          var on = u.classList.contains('on');
+          if (!on && (center <= mid || (atBottom && r.top < vh))) start(u);
+          else if (on && r.top > vh) stop(u);
         });
       }
       var ticking = false;
@@ -354,6 +387,45 @@
       window.addEventListener('resize', onScroll);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
       update();
+
+      /* Blonica → Boarmo → Talee の間だけ：スクロールが止まったら、近い作品にぴったり合わせる */
+      (function () {
+        var works = Array.prototype.slice.call(document.querySelectorAll('.scene-work'));
+        var big = window.matchMedia('(min-width: 900px) and (min-height: 600px)');
+        if (works.length < 2) return;
+        var timer = null, snapping = false, lastY = window.scrollY, dir = 0, lastIdx = -1;
+        function tops() { return works.map(function (w) { return Math.round(w.getBoundingClientRect().top + window.scrollY); }); }
+        function settle() {
+          if (!big.matches) return;
+          var y = window.scrollY, t = tops(), first = t[0], last = t[t.length - 1];
+          if (y < first - 2 || y > last + 2) { lastIdx = -1; return; }   /* 作品エリアの外では何もしない */
+          var f = 0;
+          for (var i = 0; i < t.length - 1; i++) if (y >= t[i]) f = i + (y - t[i]) / (t[i + 1] - t[i]);
+          if (y >= last) f = t.length - 1;
+          var base = Math.floor(f), frac = f - base, idx;
+          /* 進んだ向きに 12% 以上動いていたら次（前）の作品へ */
+          if (dir > 0) idx = frac > 0.12 ? base + 1 : base;
+          else if (dir < 0) idx = frac < 0.88 ? base : base + 1;
+          else idx = Math.round(f);
+          idx = Math.max(0, Math.min(t.length - 1, idx));
+          if (Math.abs(t[idx] - y) < 2) { lastIdx = idx; return; }
+          snapping = true; lastIdx = idx;
+          window.scrollTo({ top: t[idx], behavior: reduce ? 'auto' : 'smooth' });
+          var guard = setTimeout(function () { snapping = false; }, 900);
+          var check = function () {
+            if (Math.abs(window.scrollY - t[idx]) < 2) { snapping = false; clearTimeout(guard); window.removeEventListener('scroll', check); }
+          };
+          window.addEventListener('scroll', check, { passive: true });
+        }
+        window.addEventListener('scroll', function () {
+          var y = window.scrollY;
+          if (y !== lastY) dir = y > lastY ? 1 : -1;
+          lastY = y;
+          if (snapping) return;
+          clearTimeout(timer);
+          timer = setTimeout(settle, 140);
+        }, { passive: true });
+      })();
 
       /* 3D傾き（マウスで操作できる端末だけ） */
       if (reduce || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
